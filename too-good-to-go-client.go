@@ -42,20 +42,25 @@ type TooGooToGoClient struct {
 	Verbose           bool         `json:"-"`
 }
 
-func NewTooGooToGoClient(email, apkVersion, language string, verbose bool) *TooGooToGoClient {
+func NewTooGooToGoClient(email, language string, verbose bool) *TooGooToGoClient {
+	lastApkVersion, err := GetLastApkVersion()
+	if err != nil {
+		glog.Fatalf("error from GetLastApkVersion: %v", err)
+	}
+
 	randomUserAgentPos := rand.Intn(3)
 
 	var userAgent string
 	if randomUserAgentPos == 0 {
-		userAgent = fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; U; Android 9; Nexus 5 Build/M4B30Z)", apkVersion)
+		userAgent = fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; U; Android 9; Nexus 5 Build/M4B30Z)", lastApkVersion)
 	} else if randomUserAgentPos == 1 {
-		userAgent = fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; U; Android 10; SM-G935F Build/NRD90M)", apkVersion)
+		userAgent = fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; U; Android 10; SM-G935F Build/NRD90M)", lastApkVersion)
 	} else {
-		userAgent = fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; Android 12; SM-G920V Build/MMB29K)", apkVersion)
+		userAgent = fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; Android 12; SM-G920V Build/MMB29K)", lastApkVersion)
 	}
 
 	return &TooGooToGoClient{
-		ApkVersion: apkVersion,
+		ApkVersion: lastApkVersion,
 		Email:      email,
 		Language:   language,
 		Client: &http.Client{
