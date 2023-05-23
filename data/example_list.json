@@ -1,0 +1,1611 @@
+{
+    "items": [
+        {
+            "item": {
+                "item_id": "523087",
+                "sales_taxes": [
+                    {
+                        "tax_description": "VAT",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 21,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 378,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 399,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1137,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1200,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "265594",
+                    "current_url": "https://images.tgtg.ninja/standard_images/GENERAL/other3.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "521493",
+                    "current_url": "https://images.tgtg.ninja/store/d5365cb7-8adc-4bb3-9c15-a236cec0f41c.png",
+                    "is_automatically_created": false
+                },
+                "name": "Panier Surprise",
+                "description": "Sauvez un panier surprise composé d'une cuisine bio, saine et gourmande.",
+                "food_handling_instructions": "",
+                "can_user_supply_packaging": false,
+                "packaging_option": "MUST_BRING_PACKAGING",
+                "collection_info": "Possibilité d'apporter son propre contenant.",
+                "diet_categories": [],
+                "item_category": "MEAL",
+                "buffet": false,
+                "badges": [
+                    {
+                        "badge_type": "SERVICE_RATING_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 100,
+                        "user_count": 7,
+                        "month_count": 3
+                    },
+                    {
+                        "badge_type": "OVERALL_RATING_TRUST_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 100,
+                        "user_count": 7,
+                        "month_count": 3
+                    }
+                ],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION",
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY",
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_GREAT_VALUE"
+                ],
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "543035",
+                "store_name": "Ennao",
+                "branch": "",
+                "description": "",
+                "tax_identifier": "FR33899843981",
+                "website": "",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "45 Av. Reibaud, 06600 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.11453,
+                        "latitude": 43.5844836
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "521493",
+                    "current_url": "https://images.tgtg.ninja/store/d5365cb7-8adc-4bb3-9c15-a236cec0f41c.png",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 0.12173646789241477,
+                "cover_picture": {
+                    "picture_id": "265594",
+                    "current_url": "https://images.tgtg.ninja/standard_images/GENERAL/other3.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "Ennao (Panier Surprise)",
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "45 Av. Reibaud, 06600 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.11453,
+                    "latitude": 43.5844836
+                }
+            },
+            "items_available": 0,
+            "distance": 0.12173646789241477,
+            "favorite": true,
+            "in_sales_window": false,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        },
+        {
+            "item": {
+                "item_id": "470419",
+                "sales_taxes": [
+                    {
+                        "tax_description": "VAT",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 21,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 378,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 399,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1137,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1200,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "464760",
+                    "current_url": "https://images.tgtg.ninja/item/cover/9ea496ea-0a7f-4ffb-8889-3f521fa175ac.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "464719",
+                    "current_url": "https://images.tgtg.ninja/store/60ef5c51-8222-430c-a3d7-5c5372988ab5.png",
+                    "is_automatically_created": false
+                },
+                "name": "",
+                "description": "",
+                "food_handling_instructions": "",
+                "can_user_supply_packaging": false,
+                "packaging_option": "BAG_ALLOWED",
+                "collection_info": "",
+                "diet_categories": [],
+                "item_category": "GROCERIES",
+                "buffet": false,
+                "badges": [
+                    {
+                        "badge_type": "OVERALL_RATING_TRUST_SCORE",
+                        "rating_group": "LIKED",
+                        "percentage": 94,
+                        "user_count": 79,
+                        "month_count": 6
+                    },
+                    {
+                        "badge_type": "SERVICE_RATING_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 87,
+                        "user_count": 79,
+                        "month_count": 6
+                    }
+                ],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION",
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_GREAT_VALUE",
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY"
+                ],
+                "average_overall_rating": {
+                    "average_overall_rating": 4.3076923076923075,
+                    "rating_count": 78,
+                    "month_count": 6
+                },
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "493032",
+                "store_name": "Carrefour City - Antibes Soleau ",
+                "branch": "",
+                "description": "\uD83C\uDF72 Dans ton panier surprise, tu pourras trouver des produits frais (snacking, viande…), des fruits et légumes et parfois des produits d’épicerie.\n\n\uD83D\uDC49 Psst, RDV à l’accueil pour récupérer ton panier. Le prix d’origine du panier est le prix avant réduction en magasin.\n\n\uD83C\uDF0D Pense à prendre ton sac de courses afin de limiter l’utilisation d’emballages. Quelque chose que tu ne manges pas ? Partage-le !\n\n\uD83D\uDCA1 La mention « à consommer de préférence avant » indique que le produit peut avoir perdu de sa saveur mais reste sain et consommable longtemps après la date.",
+                "tax_identifier": "FR91904046687",
+                "website": "",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "42 Avenue Robert Soleau, 06600 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.120134,
+                        "latitude": 43.5841078
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "464719",
+                    "current_url": "https://images.tgtg.ninja/store/60ef5c51-8222-430c-a3d7-5c5372988ab5.png",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 0.33191595202460095,
+                "cover_picture": {
+                    "picture_id": "464760",
+                    "current_url": "https://images.tgtg.ninja/item/cover/9ea496ea-0a7f-4ffb-8889-3f521fa175ac.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "Carrefour City - Antibes Soleau ",
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "42 Avenue Robert Soleau, 06600 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.120134,
+                    "latitude": 43.5841078
+                }
+            },
+            "items_available": 0,
+            "distance": 0.33191595202460095,
+            "favorite": true,
+            "in_sales_window": false,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        },
+        {
+            "item": {
+                "item_id": "63451",
+                "sales_taxes": [
+                    {
+                        "tax_description": "VAT",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 42,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 758,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 800,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 2085,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 2200,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "778681",
+                    "current_url": "https://images.tgtg.ninja/itembulkimport/cover/74350/d27bbc5e-a683-491d-926f-33860ead6939.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "3429",
+                    "current_url": "https://images.tgtg.ninja/store/1520271915_ditOUDZz5x1TTGoyL8Al7MtyBVrkJ9di_scale.jpg",
+                    "is_automatically_created": false
+                },
+                "name": "Simple Soir",
+                "description": "Dans votre panier surprise, vous pourrez trouver des sushis, makis, californias, spring rolls, poke bowls,...  entre autres ! Les baguettes, wasabi, gingembre et sauces ne sont pas fournis. N'oubliez pas votre sac !",
+                "food_handling_instructions": "Si vous ne retrouvez pas la référence de la box sur le site internet, vous pouvez consulter la composition et les allergènes des recettes individuelles qui la composent sur le site internet ou directement sur la liste des allergènes disponibles en boutique.",
+                "can_user_supply_packaging": false,
+                "packaging_option": "MUST_BRING_BAG",
+                "collection_info": "Votre panier est surprise. Quelque chose que vous n'aimez pas ? Partagez-le !",
+                "diet_categories": [],
+                "item_category": "MEAL",
+                "buffet": false,
+                "badges": [
+                    {
+                        "badge_type": "SERVICE_RATING_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 90,
+                        "user_count": 347,
+                        "month_count": 6
+                    },
+                    {
+                        "badge_type": "OVERALL_RATING_TRUST_SCORE",
+                        "rating_group": "LIKED",
+                        "percentage": 92,
+                        "user_count": 347,
+                        "month_count": 6
+                    }
+                ],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION",
+                    "POSITIVE_FEEDBACK_GREAT_VALUE",
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY"
+                ],
+                "average_overall_rating": {
+                    "average_overall_rating": 4.3573667711598745,
+                    "rating_count": 319,
+                    "month_count": 6
+                },
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "29188",
+                "store_name": "Sushi Shop - Antibes",
+                "branch": "",
+                "description": "",
+                "tax_identifier": "FR81449531391",
+                "website": "",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "6 Boulevard Dugommier, 06600 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.1199128,
+                        "latitude": 43.5812348
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "3429",
+                    "current_url": "https://images.tgtg.ninja/store/1520271915_ditOUDZz5x1TTGoyL8Al7MtyBVrkJ9di_scale.jpg",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 0.4640045897110014,
+                "cover_picture": {
+                    "picture_id": "778681",
+                    "current_url": "https://images.tgtg.ninja/itembulkimport/cover/74350/d27bbc5e-a683-491d-926f-33860ead6939.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "Sushi Shop - Antibes (Simple Soir)",
+            "pickup_interval": {
+                "start": "2023-05-21T19:55:00Z",
+                "end": "2023-05-21T20:00:00Z"
+            },
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "6 Boulevard Dugommier, 06600 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.1199128,
+                    "latitude": 43.5812348
+                }
+            },
+            "purchase_end": "2023-05-21T20:00:00Z",
+            "items_available": 0,
+            "sold_out_at": "2023-05-20T20:26:18Z",
+            "distance": 0.4640045897110014,
+            "favorite": true,
+            "in_sales_window": true,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        },
+        {
+            "item": {
+                "item_id": "27147",
+                "sales_taxes": [
+                    {
+                        "tax_description": "VAT",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 23,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 427,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 450,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1327,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1400,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "50279",
+                    "current_url": "https://images.tgtg.ninja/user/1497892530_fUlVLEd8Nn.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "50278",
+                    "current_url": "https://images.tgtg.ninja/user/1497892529_H7CaWLPkkB_scale.jpg",
+                    "is_automatically_created": false
+                },
+                "name": "",
+                "description": "\uD83C\uDF5E Viens à la Pâtisserie Chocolaterie Lilian Bonnefoi découvrir des produits de qualité pour sauver un assortiment de viennoiseries OU de deux pâtisseries en fonction des invendus du jour : Paris-Brest, choux à la poire, opéras revisités et autres plaisirs coupables mais délicieux OU l'équivalent en entremet (St Honoré, Cheesecake, Opéra... Entre autre) \n\n\uD83C\uDF81 Ton panier surprise sera composé des invendus du jour, son contenu ne peut être choisi et peut donc varier d’un jour à l’autre.  \n\n\uD83C\uDF0E Sauvons la Planète ! Pense bien à prendre ton propre sac ET tes emballages afin de limiter l’utilisation d’emballages jetables. \n\uD83D\uDC49 Le commerçant peut te proposer un emballage pour 0.50 € à payer sur place.\n\nQuelque chose que tu ne manges pas ? Partage-le :)\n\nMerci de lutter contre le gaspillage alimentaire et bon appétit !",
+                "food_handling_instructions": "",
+                "can_user_supply_packaging": false,
+                "packaging_option": "MUST_BRING_PACKAGING",
+                "collection_info": "",
+                "diet_categories": [],
+                "item_category": "BAKED_GOODS",
+                "buffet": false,
+                "badges": [
+                    {
+                        "badge_type": "SERVICE_RATING_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 91,
+                        "user_count": 261,
+                        "month_count": 6
+                    },
+                    {
+                        "badge_type": "OVERALL_RATING_TRUST_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 89,
+                        "user_count": 261,
+                        "month_count": 6
+                    }
+                ],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION",
+                    "POSITIVE_FEEDBACK_GREAT_VALUE",
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY"
+                ],
+                "average_overall_rating": {
+                    "average_overall_rating": 4.519685039370079,
+                    "rating_count": 254,
+                    "month_count": 6
+                },
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "26984",
+                "store_name": "Pâtisserie Chocolaterie Lilian Bonnefoi",
+                "description": "",
+                "tax_identifier": "FR51812457075",
+                "website": "https://www.lilianbonnefoi.com/#Boutique",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "7 Avenue Robert Soleau, 06600 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.1205592,
+                        "latitude": 43.5813107
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "50278",
+                    "current_url": "https://images.tgtg.ninja/user/1497892529_H7CaWLPkkB_scale.jpg",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 0.494906412645268,
+                "cover_picture": {
+                    "picture_id": "50279",
+                    "current_url": "https://images.tgtg.ninja/user/1497892530_fUlVLEd8Nn.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "Pâtisserie Chocolaterie Lilian Bonnefoi",
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "7 Avenue Robert Soleau, 06600 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.1205592,
+                    "latitude": 43.5813107
+                }
+            },
+            "items_available": 0,
+            "distance": 0.494906412645268,
+            "favorite": true,
+            "in_sales_window": false,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        },
+        {
+            "item": {
+                "item_id": "654628",
+                "sales_taxes": [
+                    {
+                        "tax_description": "TVA",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 21,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 378,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 399,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1137,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1200,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "263771",
+                    "current_url": "https://images.tgtg.ninja/standard_images/BAKED_GOODS/rsWZ-P9FbQ4.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "494922",
+                    "current_url": "https://apptoogoodtogo.com/public-cache/logo/v1/1/fo-2",
+                    "is_automatically_created": false
+                },
+                "name": "Panier Surprise 12€",
+                "description": "",
+                "food_handling_instructions": "",
+                "can_user_supply_packaging": false,
+                "packaging_option": "BAG_ALLOWED",
+                "collection_info": "",
+                "diet_categories": [],
+                "item_category": "BAKED_GOODS",
+                "buffet": false,
+                "badges": [
+                    {
+                        "badge_type": "OVERALL_RATING_TRUST_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 100,
+                        "user_count": 24,
+                        "month_count": 6
+                    },
+                    {
+                        "badge_type": "SERVICE_RATING_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 100,
+                        "user_count": 24,
+                        "month_count": 6
+                    }
+                ],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_GREAT_VALUE",
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION",
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY"
+                ],
+                "average_overall_rating": {
+                    "average_overall_rating": 4.782608695652174,
+                    "rating_count": 23,
+                    "month_count": 6
+                },
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "651998",
+                "store_name": "Fournil des frères Olivier",
+                "branch": "",
+                "description": "",
+                "tax_identifier": "FR12903824175",
+                "website": "",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "15 Av. des Frères Olivier, 06600 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.119303,
+                        "latitude": 43.5803578
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "494922",
+                    "current_url": "https://apptoogoodtogo.com/public-cache/logo/v1/1/fo-2",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 0.5130235312860313,
+                "cover_picture": {
+                    "picture_id": "263771",
+                    "current_url": "https://images.tgtg.ninja/standard_images/BAKED_GOODS/rsWZ-P9FbQ4.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "Fournil des frères Olivier (Panier Surprise 12€)",
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "15 Av. des Frères Olivier, 06600 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.119303,
+                    "latitude": 43.5803578
+                }
+            },
+            "items_available": 0,
+            "distance": 0.5130235312860313,
+            "favorite": true,
+            "in_sales_window": false,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        },
+        {
+            "item": {
+                "item_id": "635421",
+                "sales_taxes": [
+                    {
+                        "tax_description": "TVA",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 21,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 378,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 399,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1137,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1200,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "269548",
+                    "current_url": "https://images.tgtg.ninja/standard_images/Restaurant/pexels-photo-55636-1125.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "635761",
+                    "current_url": "https://images.tgtg.ninja/store/943e1c4f-faf2-4d4f-83d5-e1d4149fb0ac.png",
+                    "is_automatically_created": false
+                },
+                "name": "",
+                "description": "Sauvez un panier-surprise composé des produits du traiteur.",
+                "food_handling_instructions": "",
+                "can_user_supply_packaging": false,
+                "packaging_option": "MUST_BRING_BAG",
+                "collection_info": "Les récipients mis à disposition par le commerçant vous seront consignés (consigne à 1€50). N'hésitez pas à prendre les vôtres  \uD83C\uDF0D",
+                "diet_categories": [],
+                "item_category": "MEAL",
+                "buffet": false,
+                "badges": [
+                    {
+                        "badge_type": "OVERALL_RATING_TRUST_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 100,
+                        "user_count": 1,
+                        "month_count": 3
+                    },
+                    {
+                        "badge_type": "SERVICE_RATING_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 100,
+                        "user_count": 1,
+                        "month_count": 3
+                    }
+                ],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION",
+                    "POSITIVE_FEEDBACK_GREAT_VALUE",
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY"
+                ],
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "634824",
+                "store_name": "L’Arazur Traiteur",
+                "branch": "",
+                "description": "",
+                "tax_identifier": "FR70904867009",
+                "website": "",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "3 Av. Pasteur, 06600 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.1217002,
+                        "latitude": 43.5808058
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "635761",
+                    "current_url": "https://images.tgtg.ninja/store/943e1c4f-faf2-4d4f-83d5-e1d4149fb0ac.png",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 0.6009785214937067,
+                "cover_picture": {
+                    "picture_id": "269548",
+                    "current_url": "https://images.tgtg.ninja/standard_images/Restaurant/pexels-photo-55636-1125.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "L’Arazur Traiteur",
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "3 Av. Pasteur, 06600 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.1217002,
+                    "latitude": 43.5808058
+                }
+            },
+            "items_available": 0,
+            "distance": 0.6009785214937067,
+            "favorite": true,
+            "in_sales_window": false,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        },
+        {
+            "item": {
+                "item_id": "577589",
+                "sales_taxes": [
+                    {
+                        "tax_description": "TVA",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 21,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 378,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 399,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1137,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1200,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "263771",
+                    "current_url": "https://images.tgtg.ninja/standard_images/BAKED_GOODS/rsWZ-P9FbQ4.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "582354",
+                    "current_url": "https://images.tgtg.ninja/store/68df7f22-9802-4e95-bb17-07187d8c5ea3.jpg",
+                    "is_automatically_created": false
+                },
+                "name": "Panier 12€",
+                "description": "Sauvez un panier-surprise composé de délicieux produits de boulangerie.",
+                "food_handling_instructions": "",
+                "can_user_supply_packaging": false,
+                "packaging_option": "BAG_ALLOWED",
+                "collection_info": "",
+                "diet_categories": [],
+                "item_category": "BAKED_GOODS",
+                "buffet": false,
+                "badges": [
+                    {
+                        "badge_type": "SERVICE_RATING_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 94,
+                        "user_count": 230,
+                        "month_count": 6
+                    },
+                    {
+                        "badge_type": "OVERALL_RATING_TRUST_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 91,
+                        "user_count": 230,
+                        "month_count": 6
+                    }
+                ],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_GREAT_VALUE",
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY",
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION"
+                ],
+                "average_overall_rating": {
+                    "average_overall_rating": 4.576036866359447,
+                    "rating_count": 217,
+                    "month_count": 6
+                },
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "590651",
+                "store_name": "Boulangerie Wilson",
+                "branch": "",
+                "description": "",
+                "tax_identifier": "FR14818767527",
+                "website": "",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "14 Bd du Président Wilson, 06160 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.1197227,
+                        "latitude": 43.5788952
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "582354",
+                    "current_url": "https://images.tgtg.ninja/store/68df7f22-9802-4e95-bb17-07187d8c5ea3.jpg",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 0.6720793887468475,
+                "cover_picture": {
+                    "picture_id": "263771",
+                    "current_url": "https://images.tgtg.ninja/standard_images/BAKED_GOODS/rsWZ-P9FbQ4.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "Boulangerie Wilson (Panier 12€)",
+            "pickup_interval": {
+                "start": "2023-05-21T17:00:00Z",
+                "end": "2023-05-21T18:00:00Z"
+            },
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "14 Bd du Président Wilson, 06160 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.1197227,
+                    "latitude": 43.5788952
+                }
+            },
+            "purchase_end": "2023-05-21T18:00:00Z",
+            "items_available": 0,
+            "sold_out_at": "2023-05-20T18:40:41Z",
+            "distance": 0.6720793887468475,
+            "favorite": true,
+            "in_sales_window": true,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        },
+        {
+            "item": {
+                "item_id": "437961",
+                "sales_taxes": [
+                    {
+                        "tax_description": "VAT",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 31,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 568,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 599,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1706,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1800,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "419995",
+                    "current_url": "https://images.tgtg.ninja/item/cover/f705f146-57f4-4add-b7dd-5279a8fb934e.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "422295",
+                    "current_url": "https://images.tgtg.ninja/store/864e5682-5e05-4a33-99bf-98383cd4b911.png",
+                    "is_automatically_created": false
+                },
+                "name": "Panier Classique",
+                "description": "Dans votre panier surprise, vous pourrez trouver des plats ou pizzas précuites italiens à réchauffer, cuisinés maison et éventuellement des produits frais (fromage, charcuterie...) ou d'épicerie fine ! Il peut aussi y avoir des desserts ",
+                "food_handling_instructions": "",
+                "can_user_supply_packaging": false,
+                "packaging_option": "MUST_BRING_BAG",
+                "collection_info": "Veuillez apporter vos propres sacs !",
+                "diet_categories": [],
+                "item_category": "MEAL",
+                "buffet": false,
+                "badges": [],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION",
+                    "POSITIVE_FEEDBACK_GREAT_VALUE",
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY"
+                ],
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "449506",
+                "store_name": "Saporita Italian Catering",
+                "branch": "",
+                "description": "",
+                "tax_identifier": "FR60798655627",
+                "website": "",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "6 Rue de la République, 06600 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.1228112,
+                        "latitude": 43.5805725
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "422295",
+                    "current_url": "https://images.tgtg.ninja/store/864e5682-5e05-4a33-99bf-98383cd4b911.png",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 0.68697500832489,
+                "cover_picture": {
+                    "picture_id": "419995",
+                    "current_url": "https://images.tgtg.ninja/item/cover/f705f146-57f4-4add-b7dd-5279a8fb934e.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "Saporita Italian Catering (Panier Classique)",
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "6 Rue de la République, 06600 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.1228112,
+                    "latitude": 43.5805725
+                }
+            },
+            "items_available": 0,
+            "distance": 0.68697500832489,
+            "favorite": true,
+            "in_sales_window": false,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        },
+        {
+            "item": {
+                "item_id": "33112",
+                "sales_taxes": [
+                    {
+                        "tax_description": "VAT",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 21,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 378,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 399,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1137,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1200,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "53919",
+                    "current_url": "https://images.tgtg.ninja/store/1518605591_oWHYMs2OnZCCoqlPzGzmTEEoMN3GlF9j_scale.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "53918",
+                    "current_url": "https://images.tgtg.ninja/store/1518605591_DucycebBTikJeTti9RXR4174WNYNaHZy_scale.jpg",
+                    "is_automatically_created": false
+                },
+                "name": "",
+                "description": "\uD83C\uDF72 Dans ton panier surprise, tu pourras trouver des produits frais (snacking, viande…), des fruits et légumes et parfois des produits d’épicerie.\n\n\uD83D\uDC49 Psst, RDV à l’accueil pour récupérer ton panier. Le prix d’origine du panier est le prix avant réduction en magasin.\n\n\uD83C\uDF0D Pense à prendre ton sac de courses afin de limiter l’utilisation d’emballages. Quelque chose que tu ne manges pas ? Partage-le !\n\n\uD83D\uDCA1 La mention « à consommer de préférence avant » indique que le produit peut avoir perdu de sa saveur mais reste sain et consommable longtemps après la date.",
+                "can_user_supply_packaging": false,
+                "packaging_option": "MUST_BRING_BAG",
+                "diet_categories": [],
+                "item_category": "GROCERIES",
+                "buffet": false,
+                "badges": [
+                    {
+                        "badge_type": "SERVICE_RATING_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 91,
+                        "user_count": 300,
+                        "month_count": 6
+                    },
+                    {
+                        "badge_type": "OVERALL_RATING_TRUST_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 88,
+                        "user_count": 300,
+                        "month_count": 6
+                    }
+                ],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_GREAT_VALUE",
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY",
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION"
+                ],
+                "average_overall_rating": {
+                    "average_overall_rating": 4.551971326164875,
+                    "rating_count": 279,
+                    "month_count": 6
+                },
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "32949",
+                "store_name": "Carrefour City - Antibes, République ",
+                "branch": "",
+                "description": "",
+                "tax_identifier": "FR53803359090",
+                "website": "",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "44 Rue de la République, 06600 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.1242536,
+                        "latitude": 43.5810267
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "53918",
+                    "current_url": "https://images.tgtg.ninja/store/1518605591_DucycebBTikJeTti9RXR4174WNYNaHZy_scale.jpg",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 0.7569845941725298,
+                "cover_picture": {
+                    "picture_id": "53919",
+                    "current_url": "https://images.tgtg.ninja/store/1518605591_oWHYMs2OnZCCoqlPzGzmTEEoMN3GlF9j_scale.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "Carrefour City - Antibes, République ",
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "44 Rue de la République, 06600 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.1242536,
+                    "latitude": 43.5810267
+                }
+            },
+            "items_available": 0,
+            "distance": 0.7569845941725298,
+            "favorite": true,
+            "in_sales_window": false,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        },
+        {
+            "item": {
+                "item_id": "85417",
+                "sales_taxes": [
+                    {
+                        "tax_description": "VAT",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 21,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 378,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 399,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1137,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 1200,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "137235",
+                    "current_url": "https://images.tgtg.ninja/item/cover/6cb2e7c5-86bc-457f-aa1b-c8c2405eb536.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "137233",
+                    "current_url": "https://images.tgtg.ninja/store/76a53064-36de-4c85-ba26-8745baa2748a.jpg",
+                    "is_automatically_created": false
+                },
+                "name": "",
+                "description": "\uD83C\uDF70 Dans ton panier surprise, tu pourras trouver des produits gourmands...  entre autres !\n\n♻️ Pense à apporter ton propre contenant pour récupérer ton panier et éviter le jetable ! Sans cela, l'emballage pourra t'être facturé 50 centimes.\n\n\uD83D\uDC49 Psst, le volume d'invendus varie selon les jours. Quelque chose que tu ne manges pas ? Partage-le ! \n\n\uD83D\uDCA1 Rien que sauver une baguette de pain équivaut à économiser plus d'une baignoire d'eau !",
+                "can_user_supply_packaging": false,
+                "packaging_option": "MUST_BRING_BAG",
+                "collection_info": "",
+                "diet_categories": [],
+                "item_category": "BAKED_GOODS",
+                "buffet": false,
+                "badges": [
+                    {
+                        "badge_type": "OVERALL_RATING_TRUST_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 86,
+                        "user_count": 308,
+                        "month_count": 6
+                    },
+                    {
+                        "badge_type": "SERVICE_RATING_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 90,
+                        "user_count": 308,
+                        "month_count": 6
+                    }
+                ],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION",
+                    "POSITIVE_FEEDBACK_GREAT_VALUE",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY"
+                ],
+                "average_overall_rating": {
+                    "average_overall_rating": 4.365942028985507,
+                    "rating_count": 276,
+                    "month_count": 6
+                },
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "75605",
+                "store_name": "Copenhagen Coffee Lab & bakery - Antibes",
+                "branch": "",
+                "description": "",
+                "tax_identifier": "FR77849694252",
+                "website": "",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "35 Cours Masséna, 06600 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.1274128,
+                        "latitude": 43.5812423
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "137233",
+                    "current_url": "https://images.tgtg.ninja/store/76a53064-36de-4c85-ba26-8745baa2748a.jpg",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 0.9788950015689782,
+                "cover_picture": {
+                    "picture_id": "137235",
+                    "current_url": "https://images.tgtg.ninja/item/cover/6cb2e7c5-86bc-457f-aa1b-c8c2405eb536.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "Copenhagen Coffee Lab & bakery - Antibes",
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "35 Cours Masséna, 06600 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.1274128,
+                    "latitude": 43.5812423
+                }
+            },
+            "items_available": 0,
+            "distance": 0.9788950015689782,
+            "favorite": true,
+            "in_sales_window": false,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        },
+        {
+            "item": {
+                "item_id": "457538",
+                "sales_taxes": [
+                    {
+                        "tax_description": "VAT",
+                        "tax_percentage": 5.5000
+                    }
+                ],
+                "tax_amount": {
+                    "code": "EUR",
+                    "minor_units": 42,
+                    "decimals": 2
+                },
+                "price_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 757,
+                    "decimals": 2
+                },
+                "price_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 799,
+                    "decimals": 2
+                },
+                "value_excluding_taxes": {
+                    "code": "EUR",
+                    "minor_units": 2275,
+                    "decimals": 2
+                },
+                "value_including_taxes": {
+                    "code": "EUR",
+                    "minor_units": 2400,
+                    "decimals": 2
+                },
+                "taxation_policy": "PRICE_INCLUDES_TAXES",
+                "show_sales_taxes": false,
+                "cover_picture": {
+                    "picture_id": "462234",
+                    "current_url": "https://images.tgtg.ninja/item/cover/799763d3-5d9f-4bc1-832f-f7d9646ef800.jpg",
+                    "is_automatically_created": false
+                },
+                "logo_picture": {
+                    "picture_id": "447985",
+                    "current_url": "https://images.tgtg.ninja/store/49b19dd3-840d-48bd-ba48-a01a67d1d2ef.png",
+                    "is_automatically_created": false
+                },
+                "name": "Grand panier",
+                "description": "Sauvez un panier surprise composé de délicieuses pâtisseries traditionnelles françaises, des viennoiseries, ou encore du snacking... Le commerce se trouve en face de la mer !",
+                "food_handling_instructions": "",
+                "can_user_supply_packaging": false,
+                "packaging_option": "BAG_ALLOWED",
+                "collection_info": "Retrouvez Pâtisserie  Chez Noun', juste en face de la mer !",
+                "diet_categories": [],
+                "item_category": "BAKED_GOODS",
+                "buffet": false,
+                "badges": [
+                    {
+                        "badge_type": "OVERALL_RATING_TRUST_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 86,
+                        "user_count": 85,
+                        "month_count": 6
+                    },
+                    {
+                        "badge_type": "SERVICE_RATING_SCORE",
+                        "rating_group": "LOVED",
+                        "percentage": 89,
+                        "user_count": 85,
+                        "month_count": 6
+                    }
+                ],
+                "positive_rating_reasons": [
+                    "POSITIVE_FEEDBACK_DELICIOUS_FOOD",
+                    "POSITIVE_FEEDBACK_FRIENDLY_STAFF",
+                    "POSITIVE_FEEDBACK_GREAT_QUANTITY",
+                    "POSITIVE_FEEDBACK_GREAT_VALUE",
+                    "POSITIVE_FEEDBACK_QUICK_COLLECTION",
+                    "POSITIVE_FEEDBACK_GREAT_VARIETY"
+                ],
+                "average_overall_rating": {
+                    "average_overall_rating": 4.617283950617284,
+                    "rating_count": 81,
+                    "month_count": 6
+                },
+                "favorite_count": 0
+            },
+            "store": {
+                "store_id": "477332",
+                "store_name": "Pâtisserie chez Noun'",
+                "branch": "",
+                "description": "",
+                "tax_identifier": "FR70893003327",
+                "website": "",
+                "store_location": {
+                    "address": {
+                        "country": {
+                            "iso_code": "FR",
+                            "name": "France"
+                        },
+                        "address_line": "14 Avenue Guy de Maupassant, 06160 Antibes, France",
+                        "city": "",
+                        "postal_code": ""
+                    },
+                    "location": {
+                        "longitude": 7.1103805,
+                        "latitude": 43.5692726
+                    }
+                },
+                "logo_picture": {
+                    "picture_id": "447985",
+                    "current_url": "https://images.tgtg.ninja/store/49b19dd3-840d-48bd-ba48-a01a67d1d2ef.png",
+                    "is_automatically_created": false
+                },
+                "store_time_zone": "Europe/Paris",
+                "hidden": false,
+                "favorite_count": 0,
+                "we_care": false,
+                "distance": 1.7330429173261777,
+                "cover_picture": {
+                    "picture_id": "462234",
+                    "current_url": "https://images.tgtg.ninja/item/cover/799763d3-5d9f-4bc1-832f-f7d9646ef800.jpg",
+                    "is_automatically_created": false
+                },
+                "is_manufacturer": false
+            },
+            "display_name": "Pâtisserie chez Noun' (Grand panier)",
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "FR",
+                        "name": "France"
+                    },
+                    "address_line": "14 Avenue Guy de Maupassant, 06160 Antibes, France",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.1103805,
+                    "latitude": 43.5692726
+                }
+            },
+            "items_available": 0,
+            "distance": 1.7330429173261777,
+            "favorite": true,
+            "in_sales_window": false,
+            "new_item": false,
+            "item_type": "MAGIC_BAG"
+        }
+    ],
+    "items_expanded_radius": []
+}

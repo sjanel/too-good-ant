@@ -1,0 +1,132 @@
+{
+    "access_token": "token1234",
+    "access_token_ttl_seconds": 172800,
+    "refresh_token": "refreshtoken1234",
+    "startup_data": {
+        "user": {
+            "user_id": "2",
+            "name": "A Beautiful name",
+            "country_id": "FR",
+            "email": "email@email.com",
+            "phone_country_code": "",
+            "phone_number": "",
+            "is_partner": false,
+            "newsletter_opt_in": true,
+            "push_notifications_opt_in": true,
+            "user_addresses": []
+        },
+        "app_settings": {
+            "countries": [
+                {
+                    "country_iso_code": "GB",
+                    "terms_url": "https://static.apptoogoodtogo.com/general-terms-conditions/en-gb/index.html",
+                    "terms_version": 0,
+                    "manufacturer_terms_url": "https://static.apptoogoodtogo.com/manufacturers/en-gb/index.html",
+                    "manufacturer_terms_version": 0,
+                    "privacy_url": "https://toogoodtogo.com/en-gb/privacy-policy",
+                    "prompt_for_newsletter_opt_in": true,
+                    "user_referral_terms_url": "https://static.apptoogoodtogo.com/user-referral/en-gb/index.html",
+                    "user_referral_terms_version": 1,
+                    "loyalty_card_terms_url": "https://static.apptoogoodtogo.com/loyalty-card/en-gb/index.html",
+                    "loyalty_card_terms_version": 1
+                }
+            ],
+            "purchase_rating_start": "06:00:00",
+            "purchase_rating_end": "23:00:00",
+            "purchase_rating_delay": 5400.000000000
+        },
+        "user_settings": {
+            "country_iso_code": "FR",
+            "phone_country_code_suggestion": "33",
+            "is_user_email_verified": true,
+            "should_verify_email": false,
+            "terms_url": "https://static.apptoogoodtogo.com/general-terms-conditions/fr-fr/index.html",
+            "terms_version": 0,
+            "manufacturer_terms_url": "https://static.apptoogoodtogo.com/manufacturers/fr-fr/index.html",
+            "manufacturer_terms_version": 0,
+            "privacy_url": "https://toogoodtogo.com/fr/privacy-policy",
+            "contact_form_url": "https://toogoodtogo.com/fr/support/user",
+            "careers_url": "https://toogoodtogo.com/en/careers",
+            "education_url": "https://toogoodtogo.com/fr/movement/education",
+            "instagram_url": "https://www.instagram.com/toogoodtogo.fr",
+            "store_signup_url": "https://toogoodtogo.com/fr/business?webview=1&utm_medium=App&utm_source=App&utm_campaign=",
+            "store_contact_url": "https://toogoodtogo.com/fr/support/store",
+            "bound_sw": {
+                "longitude": -5.4534286,
+                "latitude": 41.26321845
+            },
+            "bound_ne": {
+                "longitude": 9.86783435,
+                "latitude": 51.268318
+            },
+            "meals_saved": {
+                "country_iso_code": "FR",
+                "share_url": "https://share.toogoodtogo.com/mealssaved/12354?locale=fr_FR",
+                "image_url": "https://store.toogoodtogo.com/web/resource/v2/sharing/mealsSaved/mobile/5/fr_FR/12354",
+                "meals_saved_last_month": 42,
+                "month": 4,
+                "year": 2023
+            },
+            "has_any_vouchers": false,
+            "has_active_orders": false,
+            "can_show_best_before_explainer": true,
+            "has_expired_payment_methods": false,
+            "show_manufacturer_items": false,
+            "show_payment_card_issue_message": false,
+            "braze_external_id": "some-external-id",
+            "has_active_email_change_request": false,
+            "approved_terms_and_conditions": [
+                {
+                    "terms_and_conditions_type": "MANUFACTURER",
+                    "version": 0
+                }
+            ],
+            "feature_experiments": [
+                {
+                    "name": "apptrk.CE_dailyReminder",
+                    "variant": "none"
+                },
+                {
+                    "name": "apptrk.CC_QuantifyFootfall",
+                    "variant": "footfall_first"
+                }
+            ],
+            "user_referral_terms_url": "https://static.apptoogoodtogo.com/user-referral/fr-fr/index.html",
+            "user_referral_terms_version": 1,
+            "loyalty_card_terms_url": "https://static.apptoogoodtogo.com/loyalty-card/fr-fr/index.html",
+            "loyalty_card_terms_version": 1,
+            "is_manufacturer_supply_available": false,
+            "new_manufacturer_items_for_user": []
+        },
+        "orders": {
+            "current_time": "2023-05-21T09:41:03.036413534Z",
+            "has_more": false,
+            "orders": []
+        },
+        "brief_orders": [
+            {
+                "user_id": "1234",
+                "order_id": "4g7juf86f5g5g",
+                "order_state": "REDEEMED",
+                "order_type": "MAGICBAG",
+                "rating_info": {
+                    "is_rateable": true
+                },
+                "store_info": {
+                    "store_id": "12345",
+                    "store_display_name": "A wonderful store",
+                    "store_time_zone": "Europe/Rome"
+                },
+                "item_info": {
+                    "item_id": "123456",
+                    "item_name": "My name"
+                },
+                "pickup_window": {
+                    "start": "2023-04-13T17:00:00Z",
+                    "end": "2023-04-13T17:30:00Z"
+                },
+                "last_updated_at_utc": "2023-04-13T17:03:50Z"
+            }
+        ]
+    }
+}

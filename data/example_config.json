@@ -1,0 +1,24 @@
+{
+    "accountEmail": "myemail@email.com",
+    "language": "en-UK",
+    "minRequestsPeriodSeconds": 30,
+    "searchConfig": {
+        "origin": {
+            "latitude": 41.902782,
+            "longitude": 12.496366
+        },
+        "radiusInKm": 3,
+        "favoritesOnly": true,
+        "withStockOnly": true
+    },
+    "sendConfig": {
+        "emailConfig": {
+            "emailFrom": "emailfrom@email.com",
+            "emailTo": "emailto1@email.com,emailto2@email.com",
+            "gmailApiKeyFile": "secrets/client_secret_123456.apps.googleusercontent.com.json",
+            "oauthPortCallback": 10010
+        },
+        "sendAction": "email"
+    },
+    "verbose": false
+}
