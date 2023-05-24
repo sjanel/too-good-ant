@@ -7,12 +7,23 @@ import (
 )
 
 type Config struct {
-	AccountEmail             string       `json:"accountEmail"`
-	Language                 string       `json:"language"`
-	MinRequestsPeriodSeconds int          `json:"minRequestsPeriodSeconds"`
-	SearchConfig             SearchConfig `json:"searchConfig"`
-	SendConfig               SendConfig   `json:"sendConfig"`
-	Verbose                  bool         `json:"verbose"`
+	TooGoodToGoConfig TooGoodToGoConfig `json:"tooGoodToGoConfig"`
+	SendConfig        SendConfig        `json:"sendConfig"`
+	Verbose           bool              `json:"verbose"`
+}
+
+type TooGoodToGoConfig struct {
+	AccountEmail                      string       `json:"accountEmail"`
+	Language                          string       `json:"language"`
+	MinRequestsPeriodSeconds          int          `json:"minRequestsPeriodSeconds"`
+	ActiveOrdersReminderPeriodSeconds int          `json:"activeOrdersReminderPeriodSeconds"`
+	SearchConfig                      SearchConfig `json:"searchConfig"`
+	UseGzipEncoding                   bool         `json:"useGzipEncoding"`
+}
+
+type Location struct {
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
 }
 
 type SearchConfig struct {

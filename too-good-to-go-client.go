@@ -17,32 +17,35 @@ import (
 
 const (
 	kBaseUrl                = "https://apptoogoodtogo.com/api/"
-	kApiItemEndpoint        = "item/v7/"
 	kAuthByEmailEndpoint    = "auth/v3/authByEmail"
 	kAuthByRequestPollingId = "auth/v3/authByRequestPollingId"
 	kRefreshTokenEndpoint   = "auth/v3/token/refresh"
-	kSignupByEmailEndpoint  = "auth/v3/signUpByEmail"
-	kDefaultAPKVersion      = "23.4.12"
+
+	kApiListOpenedOrders = "order/v6/active"
+
+	kApiItemEndpoint = "item/v7/"
 
 	kDefaultTokenLifeTime = 4 * time.Hour
 )
 
 type TooGooToGoClient struct {
-	ApkVersion        string       `json:"apkVersion"`
-	AccessToken       string       `json:"accessToken"`
-	Email             string       `json:"-"`
-	RefreshToken      string       `json:"refreshToken"`
-	Language          string       `json:"language"`
-	Cookie            []string     `json:"cookie"`
-	UserId            string       `json:"userId"`
-	UserAgent         string       `json:"userAgent"`
-	LastRefreshedTime time.Time    `json:"lastRefreshedTime"`
-	Client            *http.Client `json:"-"`
-	CaptchaSolved     bool         `json:"-"`
-	Verbose           bool         `json:"-"`
+	Config            *TooGoodToGoConfig `json:"-"`
+	ApkVersion        string             `json:"apkVersion"`
+	AccessToken       string             `json:"accessToken"`
+	RefreshToken      string             `json:"refreshToken"`
+	Cookie            []string           `json:"cookie"`
+	UserId            string             `json:"userId"`
+	UserAgent         string             `json:"userAgent"`
+	LastRefreshedTime time.Time          `json:"lastRefreshedTime"`
+
+	lastQueryTime             time.Time    `json:"-"`
+	lastOpenedOrdersQueryTime time.Time    `json:"-"`
+	httpClient                *http.Client `json:"-"`
+	captchaSolved             bool         `json:"-"`
+	verbose                   bool         `json:"-"`
 }
 
-func NewTooGooToGoClient(email, language string, verbose bool) *TooGooToGoClient {
+func NewTooGooToGoClient(config *TooGoodToGoConfig, verbose bool) *TooGooToGoClient {
 	lastApkVersion, err := GetLastApkVersion()
 	if err != nil {
 		glog.Fatalf("error from GetLastApkVersion: %v", err)
@@ -60,14 +63,13 @@ func NewTooGooToGoClient(email, language string, verbose bool) *TooGooToGoClient
 	}
 
 	return &TooGooToGoClient{
+		Config:     config,
 		ApkVersion: lastApkVersion,
-		Email:      email,
-		Language:   language,
-		Client: &http.Client{
+		httpClient: &http.Client{
 			Timeout: 15 * time.Second,
 		},
 		UserAgent: userAgent,
-		Verbose:   verbose,
+		verbose:   verbose,
 	}
 }
 
@@ -102,7 +104,7 @@ func (client *TooGooToGoClient) refreshToken() error {
 
 	err = client.writeAuthorizationDataToFile()
 	if err != nil {
-		glog.Printf("error in client.writeAuthorizationDataToFile: %v\n", err)
+		glog.Printf("error in client.WriteAuthorizationDataToFile: %v\n", err)
 	}
 
 	return nil
@@ -113,26 +115,19 @@ func (client *TooGooToGoClient) writeAuthorizationDataToFile() error {
 	if err != nil {
 		return fmt.Errorf("error in json.MarshalIndent")
 	}
-	timeStampedFileName := fmt.Sprintf("secrets/tooGoodToGoClient.%v.%v.json", client.Email, client.LastRefreshedTime.Format(time.RFC3339))
-	err = os.WriteFile(timeStampedFileName, file, 0644)
-	if err != nil {
-		return fmt.Errorf("error in ioutil.WriteFile")
-	}
 
 	latestFileName := client.latestAuthorizationFileName()
 	err = os.WriteFile(latestFileName, file, 0644)
 	if err != nil {
 		return fmt.Errorf("error in ioutil.WriteFile")
 	}
-	glog.Printf("dumped authorization data to %v and %v\n", latestFileName, timeStampedFileName)
-
-	// TODO: remove old files, keep only last n files
+	glog.Printf("dumped authorization data to %v\n", latestFileName)
 
 	return nil
 }
 
 func (client *TooGooToGoClient) latestAuthorizationFileName() string {
-	return fmt.Sprintf("secrets/tooGoodToGoClient.%v.latest.json", client.Email)
+	return fmt.Sprintf("secrets/tooGoodToGoClient.%v.latest.json", client.Config.AccountEmail)
 }
 
 func (client *TooGooToGoClient) removeLatestAuthorizationFileName() {
@@ -186,12 +181,12 @@ func (client *TooGooToGoClient) LoginOrRefreshToken() error {
 		client.removeLatestAuthorizationFileName()
 	}
 
-	glog.Printf("too good to go log in for %v...\n", client.Email)
+	glog.Printf("too good to go log in for %v...\n", client.Config.AccountEmail)
 
 	jsonDataBeg := fmt.Sprintf(`{
 		"device_type": "ANDROID",
 		"email": "%v"`,
-		client.Email,
+		client.Config.AccountEmail,
 	)
 
 	authData := jsonDataBeg + "}"
@@ -213,7 +208,7 @@ func (client *TooGooToGoClient) LoginOrRefreshToken() error {
 	}
 
 	if state == "TERMS" {
-		return fmt.Errorf("email %v does not seem to be associated with a too good to go account, retry with another mail", client.Email)
+		return fmt.Errorf("email %v does not seem to be associated with a too good to go account, retry with another mail", client.Config.AccountEmail)
 	}
 	if state == "WAIT" {
 		pollingId, hasPollingId := parsedResponse["polling_id"]
@@ -233,14 +228,11 @@ func (client *TooGooToGoClient) LoginOrRefreshToken() error {
 }
 
 func (client *TooGooToGoClient) initiateLogin(jsonDataPolling string) error {
-	glog.Printf("too good to go validation email sent to %v - you need to validate login", client.Email)
-	sleepingTimeSeconds := 15
+	glog.Printf("too good to go validation email sent to %v - you need to validate login", client.Config.AccountEmail)
 	const kMaxPollingRetries = 20
 
 	for retryPos := 0; retryPos < kMaxPollingRetries; retryPos++ {
-		time.Sleep(time.Duration(sleepingTimeSeconds) * time.Second)
-		sleepingTimeSeconds++
-		glog.Printf("check %v/%v validation (check %v inbox)...\n", retryPos, kMaxPollingRetries, client.Email)
+		glog.Printf("check %v/%v validation (check %v inbox)...\n", retryPos, kMaxPollingRetries, client.Config.AccountEmail)
 		response, err := client.Query("POST", kAuthByRequestPollingId, []byte(jsonDataPolling))
 		if err != nil {
 			return fmt.Errorf("error from client.Query: %w", err)
@@ -270,11 +262,6 @@ func (client *TooGooToGoClient) initiateLogin(jsonDataPolling string) error {
 	return fmt.Errorf("max retries exceeded for polling, retry and accept validation email")
 }
 
-type Location struct {
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
-}
-
 type ItemParameters struct {
 	UserId        string   `json:"user_id"`
 	Origin        Location `json:"origin"`
@@ -286,11 +273,13 @@ type ItemParameters struct {
 	WithStockOnly bool     `json:"with_stock_only"`
 }
 
-func (client *TooGooToGoClient) ListStores(searchConfig SearchConfig) ([]Store, error) {
+func (client *TooGooToGoClient) ListStores() ([]Store, error) {
 	err := client.LoginOrRefreshToken()
 	if err != nil {
 		return []Store{}, fmt.Errorf("error from login: %w", err)
 	}
+
+	searchConfig := &client.Config.SearchConfig
 
 	params := ItemParameters{
 		UserId:        client.UserId,
@@ -319,18 +308,60 @@ func (client *TooGooToGoClient) ListStores(searchConfig SearchConfig) ([]Store, 
 	}
 
 	if len(stores) > 0 {
-		glog.Printf("found %v stores!\n", len(stores))
-	} else {
-		glog.Printf("no stores found\n")
+		glog.Printf("found %v store(s)!\n", len(stores))
 	}
 
 	return stores, err
 }
 
+type OpenedOrdersParameters struct {
+	UserId string `json:"user_id"`
+}
+
+func (client *TooGooToGoClient) ListOpenedOrders() ([]Order, error) {
+	if !client.canListOpenedOrders() {
+		return []Order{}, nil
+	}
+	err := client.LoginOrRefreshToken()
+	if err != nil {
+		return []Order{}, fmt.Errorf("error from login: %w", err)
+	}
+
+	params := OpenedOrdersParameters{
+		UserId: client.UserId,
+	}
+
+	jsonParams, err := json.Marshal(params)
+	if err != nil {
+		return []Order{}, fmt.Errorf("error from json.Marshal: %w", err)
+	}
+
+	response, err := client.Query("POST", kApiListOpenedOrders, jsonParams)
+	if err != nil {
+		return []Order{}, fmt.Errorf("error from client.Query: %w", err)
+	}
+
+	openedOrders, err := CreateOrdersFromListOrdersResponse(response.Body)
+	if err != nil {
+		return openedOrders, fmt.Errorf("error from CreateStoresFromListStoresResponse: %w", err)
+	}
+
+	if len(openedOrders) > 0 {
+		glog.Printf("you have %v order(s) to pickup, don't forget them:\n", len(openedOrders))
+		for orderPos, openedOrder := range openedOrders {
+			glog.Printf("- Order %v - %v\n", orderPos+1, openedOrder)
+		}
+	}
+
+	return openedOrders, err
+}
+
 func (client *TooGooToGoClient) addHeaders(req *http.Request) {
 	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Accept-Encoding", "gzip")
-	req.Header.Add("Accept-Language", client.Language)
+	if client.Config.UseGzipEncoding {
+		req.Header.Add("Accept-Encoding", "gzip")
+	}
+	req.Header.Add("Accept-Language", client.Config.Language)
 	req.Header.Add("Content-Type", "application/json; charset=utf-8")
 	req.Header.Add("User-Agent", client.UserAgent)
 	for _, cookieVal := range client.Cookie {
@@ -379,18 +410,20 @@ func (client *TooGooToGoClient) Query(method, path string, body []byte) (QueryRe
 
 	client.addHeaders(req)
 
-	glog.Printf("calling %v\n", req.URL)
-	if client.Verbose && len(req.Header) > 0 {
+	client.sleepIfNeeded()
+
+	if client.verbose && len(req.Header) > 0 {
 		printHeaders(req.URL, "request", &req.Header)
 	}
 
-	res, err := client.Client.Do(req)
+	glog.Printf("calling %v\n", req.URL)
+	res, err := client.httpClient.Do(req)
 	if err != nil {
 		return ret, fmt.Errorf("error from client.Client.Do: %w", err)
 	}
 	defer res.Body.Close()
 
-	if client.Verbose {
+	if client.verbose {
 		printHeaders(req.URL, "response", &res.Header)
 	}
 
@@ -443,7 +476,7 @@ func (client *TooGooToGoClient) checkCaptcha(uncompressedResponse []byte) (bool,
 
 	urlCaptcha, hasUrlCaptcha := parsedResponse["url"]
 	if hasUrlCaptcha {
-		if client.CaptchaSolved {
+		if client.captchaSolved {
 			return false, errors.New("new captcha detected - unable to proceed further")
 		}
 		if strings.HasPrefix(urlCaptcha, "https://geo.captcha-delivery.com") {
@@ -452,12 +485,40 @@ func (client *TooGooToGoClient) checkCaptcha(uncompressedResponse []byte) (bool,
 			if err != nil {
 				return false, fmt.Errorf("error in OpenBrowser: %w", err)
 			}
-			client.CaptchaSolved = true
-			time.Sleep(60 * time.Second)
+			client.captchaSolved = true
 			return true, nil
 		}
 	}
-	client.CaptchaSolved = false
+	client.captchaSolved = false
 
 	return false, nil
+}
+
+func (client *TooGooToGoClient) nextQueryDelay() time.Duration {
+	minRequestsPeriodSeconds := client.Config.MinRequestsPeriodSeconds
+	return time.Duration(minRequestsPeriodSeconds+rand.Intn(minRequestsPeriodSeconds)) * time.Second
+}
+
+func (client *TooGooToGoClient) sleepIfNeeded() {
+	nowTime := time.Now()
+	if !client.lastQueryTime.IsZero() {
+		elapsedTimeSinceLastQuery := nowTime.Sub(client.lastQueryTime)
+		waitingTime := client.nextQueryDelay() - elapsedTimeSinceLastQuery
+		if waitingTime > 0 {
+			time.Sleep(waitingTime)
+		}
+	}
+	client.lastQueryTime = nowTime
+}
+
+func (client *TooGooToGoClient) canListOpenedOrders() bool {
+	if client.lastOpenedOrdersQueryTime.IsZero() {
+		return true
+	}
+	nowTime := time.Now()
+	if client.lastOpenedOrdersQueryTime.Add(time.Duration(client.Config.ActiveOrdersReminderPeriodSeconds)).Before(nowTime) {
+		return true
+	}
+	client.lastOpenedOrdersQueryTime = nowTime
+	return false
 }

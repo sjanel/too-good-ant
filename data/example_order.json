@@ -1,0 +1,91 @@
+{
+    "current_time": "2023-05-23T12:09:47.337645671Z",
+    "has_more": false,
+    "orders": [
+        {
+            "order_id": "gkmfvwixjf0",
+            "state": "ACTIVE",
+            "cancel_until": "2023-05-23T11:00:00Z",
+            "redeem_interval": {
+                "start": "2023-05-23T12:40:00Z",
+                "end": "2023-05-23T15:10:00Z"
+            },
+            "pickup_interval": {
+                "start": "2023-05-23T13:00:00Z",
+                "end": "2023-05-23T15:00:00Z"
+            },
+            "store_time_zone": "Europe/Paris",
+            "quantity": 1,
+            "price_including_taxes": {
+                "code": "EUR",
+                "minor_units": 399,
+                "decimals": 2
+            },
+            "price_excluding_taxes": {
+                "code": "EUR",
+                "minor_units": 378,
+                "decimals": 2
+            },
+            "total_applied_taxes": {
+                "code": "EUR",
+                "minor_units": 21,
+                "decimals": 2
+            },
+            "sales_taxes": [
+                {
+                    "tax_description": "VAT",
+                    "tax_percentage": 5.5000,
+                    "tax_amount": {
+                        "code": "EUR",
+                        "minor_units": 21,
+                        "decimals": 2
+                    }
+                }
+            ],
+            "pickup_location": {
+                "address": {
+                    "country": {
+                        "iso_code": "IT",
+                        "name": "Italy"
+                    },
+                    "address_line": "Piazza del Colosseo, 1, 00184 Roma RM, Italia",
+                    "city": "",
+                    "postal_code": ""
+                },
+                "location": {
+                    "longitude": 7.1242536,
+                    "latitude": 43.5810267
+                }
+            },
+            "can_be_rated": false,
+            "payment_method_display_name": "Google Pay: Visa",
+            "is_rated": false,
+            "time_of_purchase": "2023-05-23T10:41:18Z",
+            "store_id": "32949",
+            "store_name": "My Store name",
+            "store_branch": "",
+            "store_logo": {
+                "picture_id": "53918",
+                "current_url": "https://images.tgtg.ninja/store/12355656_urllong.jpg",
+                "is_automatically_created": false
+            },
+            "item_id": "45874",
+            "item_name": "",
+            "item_cover_image": {
+                "picture_id": "45871",
+                "current_url": "https://images.tgtg.ninja/store/12355656_urllong.jpg",
+                "is_automatically_created": false
+            },
+            "is_buffet": false,
+            "can_user_supply_packaging": false,
+            "packaging_option": "MUST_BRING_BAG",
+            "pickup_window_changed": false,
+            "is_store_we_care": false,
+            "can_show_best_before_explainer": true,
+            "show_sales_taxes": false,
+            "order_type": "MAGICBAG",
+            "is_support_available": true,
+            "last_updated_at_utc": "2023-05-23T10:41:18Z"
+        }
+    ]
+}

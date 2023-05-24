@@ -1,15 +1,19 @@
 {
-    "accountEmail": "myemail@email.com",
-    "language": "en-UK",
-    "minRequestsPeriodSeconds": 30,
-    "searchConfig": {
-        "origin": {
-            "latitude": 41.902782,
-            "longitude": 12.496366
+    "tooGoodToGoConfig": {
+        "accountEmail": "myemail@email.com",
+        "language": "en-UK; fr-FR",
+        "minRequestsPeriodSeconds": 30,
+        "activeOrdersReminderPeriodSeconds": 600,
+        "searchConfig": {
+            "origin": {
+                "latitude": 41.902782,
+                "longitude": 12.496366
+            },
+            "radiusInKm": 3,
+            "favoritesOnly": true,
+            "withStockOnly": true
         },
-        "radiusInKm": 3,
-        "favoritesOnly": true,
-        "withStockOnly": true
+        "useGzipEncoding": true
     },
     "sendConfig": {
         "emailConfig": {

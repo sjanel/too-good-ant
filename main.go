@@ -4,10 +4,10 @@ import (
 	"context"
 	"flag"
 	"log"
-	"math/rand"
 	"os"
+	"os/signal"
 	"reflect"
-	"time"
+	"syscall"
 
 	"google.golang.org/api/gmail/v1"
 )
@@ -38,9 +38,21 @@ func main() {
 		config.Verbose = true
 	}
 
-	glog.Printf("starting too good to go service for %v\n", config.AccountEmail)
+	// Capture SIGTERM for graceful shutdown
+	stopSignalReceived := false
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt)
+	signal.Notify(signalChan, syscall.SIGTERM)
+	go func() {
+		for sig := range signalChan {
+			glog.Printf("%v signal received\n", sig)
+			stopSignalReceived = true
+		}
+	}()
 
-	tooGoodToGoClient := NewTooGooToGoClient(config.AccountEmail, config.Language, config.Verbose)
+	glog.Printf("starting too good to go ant for %v\n", config.TooGoodToGoConfig.AccountEmail)
+
+	tooGoodToGoClient := NewTooGooToGoClient(&config.TooGoodToGoConfig, config.Verbose)
 
 	var gmailService *gmail.Service
 	if config.SendConfig.SendAction == "email" {
@@ -51,20 +63,33 @@ func main() {
 		}
 	}
 
-	var lastStores []Store
+	var lastStoresSent []Store
 
-	for {
-		stores, err := tooGoodToGoClient.ListStores(config.SearchConfig)
+	for !stopSignalReceived {
+		stores, err := tooGoodToGoClient.ListStores()
 		if err != nil {
-			glog.Fatalf("error from ListFavoriteStores: %v", err)
+			glog.Fatalf("error from ListStores: %v", err)
 		}
 
-		if gmailService != nil && len(stores) > 0 && !reflect.DeepEqual(lastStores, stores) {
-			SendStoresByEmail(gmailService, config.SendConfig.EmailConfig, stores)
-			lastStores = stores
+		_, err = tooGoodToGoClient.ListOpenedOrders()
+		if err != nil {
+			glog.Fatalf("error from ListOpenedOrders: %v", err)
 		}
 
-		timeSleepSeconds := config.MinRequestsPeriodSeconds + rand.Intn(config.MinRequestsPeriodSeconds)
-		time.Sleep(time.Duration(timeSleepSeconds) * time.Second)
+		if gmailService != nil {
+			if len(stores) > 0 && !reflect.DeepEqual(lastStoresSent, stores) {
+				SendStoresByEmail(gmailService, config.SendConfig.EmailConfig, stores)
+				lastStoresSent = stores
+			}
+		}
+
 	}
+
+	err = tooGoodToGoClient.writeAuthorizationDataToFile()
+	if err != nil {
+		glog.Printf("error in tooGoodToGoClient.WriteAuthorizationDataToFile: %v\n", err)
+		err = nil
+	}
+
+	glog.Printf("bye\n")
 }

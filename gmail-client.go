@@ -100,7 +100,7 @@ func SendStoresByEmail(gmailService *gmail.Service, emailConfig EmailConfig, sto
 	if err != nil {
 		glog.Printf("error from gmailService.Users.Messages.Send: %v", err)
 	} else {
-		fmt.Println("Message sent!")
+		glog.Printf("message sent to %v\n", emailConfig.EmailTo)
 	}
 }
 
