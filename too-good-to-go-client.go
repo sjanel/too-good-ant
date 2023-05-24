@@ -495,8 +495,9 @@ func (client *TooGooToGoClient) checkCaptcha(uncompressedResponse []byte) (bool,
 }
 
 func (client *TooGooToGoClient) nextQueryDelay() time.Duration {
-	minRequestsPeriodSeconds := client.Config.MinRequestsPeriodSeconds
-	return time.Duration(minRequestsPeriodSeconds+rand.Intn(minRequestsPeriodSeconds)) * time.Second
+	minRequestsPeriod := client.Config.MinRequestsPeriod.Duration
+	randomExtraDuration := time.Duration(rand.Int63n(minRequestsPeriod.Nanoseconds()))
+	return minRequestsPeriod + randomExtraDuration
 }
 
 func (client *TooGooToGoClient) sleepIfNeeded() {
@@ -512,13 +513,14 @@ func (client *TooGooToGoClient) sleepIfNeeded() {
 }
 
 func (client *TooGooToGoClient) canListOpenedOrders() bool {
-	if client.lastOpenedOrdersQueryTime.IsZero() {
-		return true
-	}
 	nowTime := time.Now()
-	if client.lastOpenedOrdersQueryTime.Add(time.Duration(client.Config.ActiveOrdersReminderPeriodSeconds)).Before(nowTime) {
+	if client.lastOpenedOrdersQueryTime.IsZero() {
+		client.lastOpenedOrdersQueryTime = nowTime
 		return true
 	}
-	client.lastOpenedOrdersQueryTime = nowTime
+	if client.lastOpenedOrdersQueryTime.Add(client.Config.ActiveOrdersReminderPeriod.Duration).Before(nowTime) {
+		client.lastOpenedOrdersQueryTime = nowTime
+		return true
+	}
 	return false
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 )
 
 type Config struct {
@@ -12,13 +13,18 @@ type Config struct {
 	Verbose           bool              `json:"verbose"`
 }
 
+// Custom duration to be able to unmarshall it from strings
+type Duration struct {
+	time.Duration
+}
+
 type TooGoodToGoConfig struct {
-	AccountEmail                      string       `json:"accountEmail"`
-	Language                          string       `json:"language"`
-	MinRequestsPeriodSeconds          int          `json:"minRequestsPeriodSeconds"`
-	ActiveOrdersReminderPeriodSeconds int          `json:"activeOrdersReminderPeriodSeconds"`
-	SearchConfig                      SearchConfig `json:"searchConfig"`
-	UseGzipEncoding                   bool         `json:"useGzipEncoding"`
+	AccountEmail               string       `json:"accountEmail"`
+	Language                   string       `json:"language"`
+	MinRequestsPeriod          Duration     `json:"minRequestsPeriod"`
+	ActiveOrdersReminderPeriod Duration     `json:"activeOrdersReminderPeriod"`
+	SearchConfig               SearchConfig `json:"searchConfig"`
+	UseGzipEncoding            bool         `json:"useGzipEncoding"`
 }
 
 type Location struct {
@@ -66,4 +72,25 @@ func ReadConfigFromFile(filePath string) (*Config, error) {
 	glog.Printf("loaded configuration from %v\n", filePath)
 
 	return config, err
+}
+
+func (duration *Duration) UnmarshalJSON(b []byte) error {
+	var unmarshalledJson interface{}
+
+	err := json.Unmarshal(b, &unmarshalledJson)
+	if err != nil {
+		return fmt.Errorf("error from json.Unmarshal: %w", err)
+	}
+
+	switch value := unmarshalledJson.(type) {
+	case string:
+		duration.Duration, err = time.ParseDuration(value)
+		if err != nil {
+			return fmt.Errorf("error from time.ParseDuration: %w", err)
+		}
+	default:
+		return fmt.Errorf("invalid duration: %#v, provide it as string", unmarshalledJson)
+	}
+
+	return nil
 }
