@@ -3,18 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 )
-
-type Price struct {
-	Amount       int
-	NbDecimals   int
-	CurrencyCode string
-}
-
-func (p Price) String() string {
-	return fmt.Sprintf("%v %v", float64(p.Amount)/math.Pow(10, float64(p.NbDecimals)), p.CurrencyCode)
-}
 
 type Store struct {
 	Name   string
@@ -46,13 +35,9 @@ func CreateStoresFromListStoresResponse(responseBody string) ([]Store, error) {
 	for itemPos, item := range items {
 		itemParsed := item["item"].(map[string]interface{})
 
-		priceIncludingTaxes := itemParsed["price_including_taxes"].(map[string]interface{})
-
 		stores[itemPos].Id = itemParsed["item_id"].(string)
 
-		stores[itemPos].Price.Amount = int(priceIncludingTaxes["minor_units"].(float64))
-		stores[itemPos].Price.CurrencyCode = priceIncludingTaxes["code"].(string)
-		stores[itemPos].Price.NbDecimals = int(priceIncludingTaxes["decimals"].(float64))
+		stores[itemPos].Price = NewPrice(itemParsed["price_including_taxes"].(map[string]interface{}))
 
 		rating, hasRating := itemParsed["average_overall_rating"]
 		if hasRating {
