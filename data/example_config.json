@@ -2,8 +2,8 @@
     "tooGoodToGoConfig": {
         "accountEmail": "myemail@email.com",
         "language": "en-UK; fr-FR",
-        "minRequestsPeriodSeconds": 30,
-        "activeOrdersReminderPeriodSeconds": 600,
+        "minRequestsPeriod": "30s",
+        "activeOrdersReminderPeriod": "10m",
         "searchConfig": {
             "origin": {
                 "latitude": 41.902782,
