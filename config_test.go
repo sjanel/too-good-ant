@@ -46,7 +46,11 @@ func TestLoadConfig(t *testing.T) {
 				GmailApiKeyFile:   "secrets/client_secret_123456.apps.googleusercontent.com.json",
 				OauthPortCallback: 10010,
 			},
-			SendAction: "email",
+			WhatsAppConfig: WhatsAppConfig{
+				GroupNameTo: "My WhatsApp Group Name",
+				UserNameTo:  "My WhatsApp User Name",
+			},
+			SendAction: SendEmail,
 		},
 		Verbose: false,
 	}

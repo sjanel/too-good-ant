@@ -1,13 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"flag"
 	"log"
 	"os"
 	"reflect"
-
-	"google.golang.org/api/gmail/v1"
 )
 
 var (
@@ -35,18 +34,15 @@ func main() {
 		config.Verbose = false
 	}
 
+	sender, err := NewSender(config.SendConfig)
+	if err != nil {
+		glog.Fatalf("error from NewSender: %v", err)
+	}
+	defer sender.Close()
+
 	glog.Printf("starting too good to go ant for %v\n", config.TooGoodToGoConfig.AccountEmail)
 
 	tooGoodToGoClient := NewTooGooToGoClient(&config.TooGoodToGoConfig, config.Verbose)
-
-	var gmailService *gmail.Service
-	if config.SendConfig.SendAction == "email" {
-		// Create a new gmail service using the client
-		gmailService, err = CreateGmailService(config.SendConfig.EmailConfig)
-		if err != nil {
-			glog.Fatalf("error from CreateGmailService: %v", err)
-		}
-	}
 
 	// Capture SIGTERM for graceful shutdown
 	stopSignalReceived := false
@@ -70,12 +66,19 @@ func main() {
 			glog.Fatalf("error from ListOpenedOrders: %v", err)
 		}
 
-		if gmailService != nil {
-			if len(stores) > 0 && !reflect.DeepEqual(lastStoresSent, stores) {
-				SendStoresByEmail(gmailService, config.SendConfig.EmailConfig, stores)
-				lastStoresSent = stores
+		if len(stores) > 0 && !reflect.DeepEqual(lastStoresSent, stores) {
+			storeMessage := bytes.NewBuffer([]byte{})
+			for _, store := range stores {
+				storeMessage.WriteString(store.String())
+				storeMessage.WriteByte('\n')
 			}
+			_, err = sender.Write(storeMessage.Bytes())
+			if err != nil {
+				glog.Fatalf("error from sender.Write: %v", err)
+			}
+			lastStoresSent = stores
 		}
+
 	}
 
 	err = tooGoodToGoClient.writeAuthorizationDataToFile()
