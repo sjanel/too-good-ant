@@ -17,15 +17,18 @@ import (
 
 const (
 	kBaseUrl                = "https://apptoogoodtogo.com/api/"
-	kAuthByEmailEndpoint    = "auth/v3/authByEmail"
-	kAuthByRequestPollingId = "auth/v3/authByRequestPollingId"
+	kAuthByEmailEndpoint    = "auth/v4/authByEmail"
+	kAuthByRequestPollingId = "auth/v4/authByRequestPollingId"
 	kRefreshTokenEndpoint   = "auth/v3/token/refresh"
 
-	kApiListOpenedOrders = "order/v6/active"
+	kApiListOpenedOrders = "order/v7/active"
+	kApiCreateOrder      = "order/v7/create"
+
+	kApiUserInformation = "user/v2"
+
+	kApiPaymentMethods = "paymentMethod/v1/"
 
 	kApiItemEndpoint = "item/v7/"
-
-	kDefaultTokenLifeTime = 4 * time.Hour
 )
 
 type TooGooToGoClient struct {
@@ -51,16 +54,13 @@ func NewTooGooToGoClient(config *TooGoodToGoConfig, verbose bool) *TooGooToGoCli
 		glog.Fatalf("error from GetLastApkVersion: %v", err)
 	}
 
-	randomUserAgentPos := rand.Intn(3)
-
-	var userAgent string
-	if randomUserAgentPos == 0 {
-		userAgent = fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; U; Android 9; Nexus 5 Build/M4B30Z)", lastApkVersion)
-	} else if randomUserAgentPos == 1 {
-		userAgent = fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; U; Android 10; SM-G935F Build/NRD90M)", lastApkVersion)
-	} else {
-		userAgent = fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; Android 12; SM-G920V Build/MMB29K)", lastApkVersion)
+	kUserAgents := [...]string{
+		fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; U; Android 9; Nexus 5 Build/M4B30Z)", lastApkVersion),
+		fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; U; Android 10; SM-G935F Build/NRD90M)", lastApkVersion),
+		fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; Android 12; SM-G920V Build/MMB29K)", lastApkVersion),
 	}
+
+	userAgent := kUserAgents[rand.Intn(len(kUserAgents))]
 
 	return &TooGooToGoClient{
 		Config:     config,
@@ -78,7 +78,7 @@ func (client *TooGooToGoClient) IsLoggedIn() bool {
 }
 
 func (client *TooGooToGoClient) IsTokenStillValid() bool {
-	return client.LastRefreshedTime.Add(kDefaultTokenLifeTime).After(time.Now())
+	return client.LastRefreshedTime.Add(client.Config.TokenValidityDuration.Duration).After(time.Now())
 }
 
 func (client *TooGooToGoClient) refreshToken() error {
@@ -88,7 +88,7 @@ func (client *TooGooToGoClient) refreshToken() error {
 
 	jsonData := fmt.Sprintf(`{"refresh_token": "%v"}`, client.RefreshToken)
 
-	response, err := client.Query("POST", kRefreshTokenEndpoint, []byte(jsonData))
+	response, err := client.query("POST", kRefreshTokenEndpoint, []byte(jsonData), true)
 	if err != nil {
 		return fmt.Errorf("error from client.Query: %w", err)
 	}
@@ -164,7 +164,7 @@ func (client *TooGooToGoClient) readAuthorizationDataFromLatestFile() error {
 	return nil
 }
 
-func (client *TooGooToGoClient) LoginOrRefreshToken() error {
+func (client *TooGooToGoClient) loginOrRefreshToken() error {
 	if client.IsLoggedIn() {
 		return client.refreshToken()
 	}
@@ -178,6 +178,7 @@ func (client *TooGooToGoClient) LoginOrRefreshToken() error {
 	} else if client.IsTokenStillValid() {
 		return nil
 	} else {
+		glog.Printf("authorization data has expired\n")
 		client.removeLatestAuthorizationFileName()
 	}
 
@@ -191,7 +192,7 @@ func (client *TooGooToGoClient) LoginOrRefreshToken() error {
 
 	authData := jsonDataBeg + "}"
 
-	response, err := client.Query("POST", kAuthByEmailEndpoint, []byte(authData))
+	response, err := client.query("POST", kAuthByEmailEndpoint, []byte(authData), true)
 	if err != nil {
 		return fmt.Errorf("error from client.Query: %w", err)
 	}
@@ -232,8 +233,8 @@ func (client *TooGooToGoClient) initiateLogin(jsonDataPolling string) error {
 	const kMaxPollingRetries = 20
 
 	for retryPos := 0; retryPos < kMaxPollingRetries; retryPos++ {
-		glog.Printf("check %v/%v validation (check %v inbox)...\n", retryPos, kMaxPollingRetries, client.Config.AccountEmail)
-		response, err := client.Query("POST", kAuthByRequestPollingId, []byte(jsonDataPolling))
+		glog.Printf("check %v/%v validation (check %v inbox)...\n", retryPos+1, kMaxPollingRetries, client.Config.AccountEmail)
+		response, err := client.query("POST", kAuthByRequestPollingId, []byte(jsonDataPolling), true)
 		if err != nil {
 			return fmt.Errorf("error from client.Query: %w", err)
 		}
@@ -248,7 +249,17 @@ func (client *TooGooToGoClient) initiateLogin(jsonDataPolling string) error {
 			client.RefreshToken = parsedBody["refresh_token"].(string)
 			client.LastRefreshedTime = time.Now()
 
-			client.UserId = parsedBody["startup_data"].(map[string]interface{})["user"].(map[string]interface{})["user_id"].(string)
+			response, err := client.query("POST", kApiUserInformation, []byte{}, false)
+			if err != nil {
+				return fmt.Errorf("error from client.Query: %w", err)
+			}
+
+			err = json.Unmarshal([]byte(response.Body), &parsedBody)
+			if err != nil {
+				return fmt.Errorf("error from json.Unmarshal: %w", err)
+			}
+
+			client.UserId = parsedBody["user_id"].(string)
 
 			err = client.writeAuthorizationDataToFile()
 			if err != nil {
@@ -274,11 +285,6 @@ type ItemParameters struct {
 }
 
 func (client *TooGooToGoClient) ListStores() ([]Store, error) {
-	err := client.LoginOrRefreshToken()
-	if err != nil {
-		return []Store{}, fmt.Errorf("error from login: %w", err)
-	}
-
 	searchConfig := &client.Config.SearchConfig
 
 	params := ItemParameters{
@@ -292,19 +298,14 @@ func (client *TooGooToGoClient) ListStores() ([]Store, error) {
 		WithStockOnly: searchConfig.WithStockOnly,
 	}
 
-	jsonParams, err := json.Marshal(params)
+	response, err := client.postQueryWithSleep(kApiItemEndpoint, params)
 	if err != nil {
-		return []Store{}, fmt.Errorf("error from json.Marshal: %w", err)
+		return []Store{}, fmt.Errorf("error from client.postQueryWithSleep: %w", err)
 	}
 
-	response, err := client.Query("POST", kApiItemEndpoint, jsonParams)
+	stores, err := NewStoresFromListStoresResponse(response.Body)
 	if err != nil {
-		return []Store{}, fmt.Errorf("error from client.Query: %w", err)
-	}
-
-	stores, err := CreateStoresFromListStoresResponse(response.Body)
-	if err != nil {
-		return stores, fmt.Errorf("error from CreateStoresFromListStoresResponse: %w", err)
+		return stores, fmt.Errorf("error from NewStoresFromListStoresResponse: %w", err)
 	}
 
 	if len(stores) > 0 {
@@ -322,28 +323,19 @@ func (client *TooGooToGoClient) ListOpenedOrders() ([]Order, error) {
 	if !client.canListOpenedOrders() {
 		return []Order{}, nil
 	}
-	err := client.LoginOrRefreshToken()
-	if err != nil {
-		return []Order{}, fmt.Errorf("error from login: %w", err)
-	}
 
 	params := OpenedOrdersParameters{
 		UserId: client.UserId,
 	}
 
-	jsonParams, err := json.Marshal(params)
+	response, err := client.postQueryWithSleep(kApiListOpenedOrders, params)
 	if err != nil {
-		return []Order{}, fmt.Errorf("error from json.Marshal: %w", err)
+		return []Order{}, fmt.Errorf("error from client.postQueryWithSleep: %w", err)
 	}
 
-	response, err := client.Query("POST", kApiListOpenedOrders, jsonParams)
+	openedOrders, err := NewOrdersFromListOrdersResponse(response.Body)
 	if err != nil {
-		return []Order{}, fmt.Errorf("error from client.Query: %w", err)
-	}
-
-	openedOrders, err := CreateOrdersFromListOrdersResponse(response.Body)
-	if err != nil {
-		return openedOrders, fmt.Errorf("error from CreateStoresFromListStoresResponse: %w", err)
+		return openedOrders, fmt.Errorf("error from NewOrdersFromListOrdersResponse: %w", err)
 	}
 
 	if len(openedOrders) > 0 {
@@ -354,6 +346,187 @@ func (client *TooGooToGoClient) ListOpenedOrders() ([]Order, error) {
 	}
 
 	return openedOrders, err
+}
+
+type PaymentMethodsParameters struct {
+	PaymentMethodRequestItem []PaymentMethodRequestItem `json:"supported_types"`
+}
+
+type PaymentMethodRequestItem struct {
+	PaymentProvider PaymentProvider `json:"provider"`
+	PaymentTypes    []PaymentType   `json:"payment_types"`
+}
+
+func (client *TooGooToGoClient) PaymentMethods(paymentProvider PaymentProvider) ([]PaymentMethod, error) {
+	params := PaymentMethodsParameters{
+		PaymentMethodRequestItem: []PaymentMethodRequestItem{
+			{
+				PaymentProvider: paymentProvider,
+				PaymentTypes: []PaymentType{
+					CreditCard,
+					PayPal,
+					GooglePay,
+				},
+			},
+		},
+	}
+
+	response, err := client.postQueryWithSleep(kApiPaymentMethods, params)
+	if err != nil {
+		return []PaymentMethod{}, fmt.Errorf("error from client.postQueryWithSleep: %w", err)
+	}
+
+	paymentMethods, err := NewPaymentMethodsFromPaymentMethodsResponse(response.Body)
+	if err != nil {
+		return paymentMethods, fmt.Errorf("error from NewPaymentMethodsFromPaymentMethodsResponse: %w", err)
+	}
+
+	if len(paymentMethods) > 0 {
+		glog.Printf("you have %v payment methods\n", len(paymentMethods))
+		for paymentMethodPos, paymentMethod := range paymentMethods {
+			glog.Printf("- Payment method %v: %v\n", paymentMethodPos+1, paymentMethod)
+		}
+	}
+
+	return paymentMethods, nil
+}
+
+type CreateOrderParameters struct {
+	NbBags int `json:"item_count"`
+}
+
+func (client *TooGooToGoClient) ReserveOrder(store Store, nbBags int) (ReservedOrder, error) {
+	var reservedOrder ReservedOrder
+	if store.AvailableBags < nbBags {
+		return reservedOrder, fmt.Errorf("not enough available bags for %v", store)
+	}
+	params := CreateOrderParameters{
+		NbBags: nbBags,
+	}
+
+	path := fmt.Sprintf("%v/%v", kApiCreateOrder, store.Id)
+
+	response, err := client.postQueryWithoutSleep(path, params)
+	if err != nil {
+		return reservedOrder, fmt.Errorf("error from client.postQueryWithoutSleep: %w", err)
+	}
+
+	reservedOrder, err = NewReservedOrderFromCreateOrder(response.Body)
+	if err != nil {
+		return reservedOrder, fmt.Errorf("error from NewReservedOrderFromCreateOrder: %w", err)
+	}
+
+	return reservedOrder, nil
+}
+
+type CancelOrderParameters struct {
+	CancelReason int `json:"cancel_reason_id"`
+}
+
+func (client *TooGooToGoClient) CancelOrder(orderId string) error {
+	params := CancelOrderParameters{
+		CancelReason: 1,
+	}
+
+	path := fmt.Sprintf("order/v7/%v/abort", orderId)
+
+	response, err := client.postQueryWithSleep(path, params)
+	if err != nil {
+		return fmt.Errorf("error from client.postQueryWithoutSleep: %w", err)
+	}
+
+	if response.StatusCode != http.StatusOK {
+		return fmt.Errorf("http error %v, with body: %v", response.StatusCode, response.Body)
+	}
+
+	return nil
+}
+
+type PayOrderParameters struct {
+	Authorization Authorization `json:"authorization"`
+}
+
+type Authorization struct {
+	AuthorizationPayload AuthorizationPayload `json:"authorization_payload"`
+	PaymentProvider      PaymentProvider      `json:"payment_provider"`
+	ReturnUrl            string               `json:"return_url"`
+}
+
+type AuthorizationPayload struct {
+	Type              string      `json:"type"`
+	PaymentType       PaymentType `json:"payment_type"`
+	Payload           string      `json:"payload"`
+	DetailsPayload    string      `json:"details_payload,omitempty"`
+	SavePaymentMethod string      `json:"save_payment_method,omitempty"`
+}
+
+func (client *TooGooToGoClient) PayOrder(orderId string, paymentMethod PaymentMethod) (OrderPayment, error) {
+	params := PayOrderParameters{
+		Authorization: Authorization{
+			AuthorizationPayload: AuthorizationPayload{
+				Type:              paymentMethod.PaymentProvider.GetAuthorizationPayloadType(),
+				PaymentType:       paymentMethod.PaymentType,
+				Payload:           paymentMethod.AdyenApiPayload, // may not work with non Adyen payment types...
+				SavePaymentMethod: paymentMethod.SavePaymentMethod,
+			},
+			PaymentProvider: paymentMethod.PaymentProvider,
+			ReturnUrl:       "adyencheckout://com.app.tgtg.itemview", // TODO: not yet figured out how to set this field
+		},
+	}
+
+	path := fmt.Sprintf("order/v7/%v/pay", orderId)
+
+	var orderPayment OrderPayment
+
+	response, err := client.postQueryWithSleep(path, params)
+	if err != nil {
+		return orderPayment, fmt.Errorf("error from client.postQueryWithoutSleep: %w", err)
+	}
+
+	orderPayment, err = NewOrderPaymentFromPayOrderResponse(response.Body)
+	if err != nil {
+		return orderPayment, fmt.Errorf("error from NewOrderPaymentFromPayOrderResponse: %w", err)
+	}
+
+	glog.Printf("order payment %v created\n", orderPayment)
+
+	paymentInfoResponse, err := client.postQueryWithSleep(fmt.Sprintf("payment/v3/%v", orderPayment.Id), []byte{})
+	if err != nil {
+		glog.Printf("error from client.postQueryWithSleep: %v\n", err)
+		err = nil
+	}
+
+	glog.Printf("payment information from order payment is %v\n", paymentInfoResponse)
+
+	return orderPayment, nil
+}
+
+func (client *TooGooToGoClient) postQueryWithSleep(path string, paramObject any) (QueryResponse, error) {
+	return client.postQuery(path, paramObject, true)
+}
+
+func (client *TooGooToGoClient) postQueryWithoutSleep(path string, paramObject any) (QueryResponse, error) {
+	return client.postQuery(path, paramObject, false)
+}
+
+func (client *TooGooToGoClient) postQuery(path string, paramObject any, sleepIfNeeded bool) (QueryResponse, error) {
+	var ret QueryResponse
+	err := client.loginOrRefreshToken()
+	if err != nil {
+		return ret, fmt.Errorf("error from client.LoginOrRefreshToken: %w", err)
+	}
+
+	jsonParams, err := json.Marshal(paramObject)
+	if err != nil {
+		return ret, fmt.Errorf("error from json.Marshal: %w", err)
+	}
+
+	ret, err = client.query("POST", path, jsonParams, sleepIfNeeded)
+	if err != nil {
+		return ret, fmt.Errorf("error from client.Query: %w", err)
+	}
+
+	return ret, nil
 }
 
 func (client *TooGooToGoClient) addHeaders(req *http.Request) {
@@ -396,7 +569,7 @@ func hasGzipContentEncodingHeader(header *http.Header) bool {
 	return false
 }
 
-func (client *TooGooToGoClient) Query(method, path string, body []byte) (QueryResponse, error) {
+func (client *TooGooToGoClient) query(method, path string, body []byte, sleepIfNeeded bool) (QueryResponse, error) {
 	url, err := url.JoinPath(kBaseUrl, path)
 	var ret QueryResponse
 	if err != nil {
@@ -410,13 +583,15 @@ func (client *TooGooToGoClient) Query(method, path string, body []byte) (QueryRe
 
 	client.addHeaders(req)
 
-	client.sleepIfNeeded()
+	if sleepIfNeeded {
+		client.sleepIfNeeded()
+	}
 
 	if client.verbose && len(req.Header) > 0 {
 		printHeaders(req.URL, "request", &req.Header)
 	}
 
-	glog.Printf("calling %v\n", req.URL)
+	glog.Printf("%v %v\n", req.Method, req.URL)
 	res, err := client.httpClient.Do(req)
 	if err != nil {
 		return ret, fmt.Errorf("error from client.Client.Do: %w", err)
@@ -450,7 +625,7 @@ func (client *TooGooToGoClient) Query(method, path string, body []byte) (QueryRe
 
 	retry, err := client.checkCaptcha(uncompressedResponse)
 	if retry {
-		return client.Query(method, path, body)
+		return client.query(method, path, body, sleepIfNeeded)
 	}
 
 	ret.Body = string(uncompressedResponse)
@@ -507,6 +682,7 @@ func (client *TooGooToGoClient) sleepIfNeeded() {
 		waitingTime := client.nextQueryDelay() - elapsedTimeSinceLastQuery
 		if waitingTime > 0 {
 			time.Sleep(waitingTime)
+			nowTime = nowTime.Add(waitingTime)
 		}
 	}
 	client.lastQueryTime = nowTime
@@ -514,10 +690,6 @@ func (client *TooGooToGoClient) sleepIfNeeded() {
 
 func (client *TooGooToGoClient) canListOpenedOrders() bool {
 	nowTime := time.Now()
-	if client.lastOpenedOrdersQueryTime.IsZero() {
-		client.lastOpenedOrdersQueryTime = nowTime
-		return true
-	}
 	if client.lastOpenedOrdersQueryTime.Add(client.Config.ActiveOrdersReminderPeriod.Duration).Before(nowTime) {
 		client.lastOpenedOrdersQueryTime = nowTime
 		return true

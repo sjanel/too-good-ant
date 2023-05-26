@@ -7,11 +7,11 @@ import (
 )
 
 const (
-	kExampleStorePath = "data/example_list.json"
+	kExampleStorePath = "data/test/example_list.json"
 )
 
 func TestStoreEmptyResponse(t *testing.T) {
-	stores, err := CreateStoresFromListStoresResponse("")
+	stores, err := NewStoresFromListStoresResponse("")
 	if len(stores) > 0 || err != nil {
 		t.Fatalf("expected empty list of stores for empty response")
 	}
@@ -22,9 +22,9 @@ func TestStoreStandardResponse(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error reading file %v", kExampleStorePath)
 	}
-	stores, err := CreateStoresFromListStoresResponse(string(responseBody))
+	stores, err := NewStoresFromListStoresResponse(string(responseBody))
 	if err != nil {
-		t.Fatalf("error in CreateStoresFromListStoresResponse")
+		t.Fatalf("error in NewStoresFromListStoresResponse")
 	}
 	if len(stores) == 0 {
 		t.Fatalf("expected non empty list of stores for empty response")
@@ -46,19 +46,11 @@ func TestStoreStandardResponse(t *testing.T) {
 			NbDecimals:   2,
 			CurrencyCode: "EUR",
 		},
+		AvailableBags: 1,
 	}
 
-	if store1.Name != expectedStore1.Name {
-		t.Fatalf("expected name %v, got %v", expectedStore1.Name, store1.Name)
-	}
-	if store1.Id != expectedStore1.Id {
-		t.Fatalf("expected id %v, got %v", expectedStore1.Id, store1.Id)
-	}
-	if store1.Rating != expectedStore1.Rating {
-		t.Fatalf("expected rating %v, got %v", expectedStore1.Rating, store1.Rating)
-	}
-	if store1.Price != expectedStore1.Price {
-		t.Fatalf("expected price %v, got %v", expectedStore1.Price, store1.Price)
+	if store1 != expectedStore1 {
+		t.Fatalf("expected store %v, got %v", expectedStore1, store1)
 	}
 }
 

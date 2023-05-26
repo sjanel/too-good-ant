@@ -28,10 +28,10 @@ type Order struct {
 }
 
 func (o *Order) String() string {
-	return fmt.Sprintf("Order %v with %v bags to pick at %v", o.Id, o.Quantity, o.PickupDetails)
+	return fmt.Sprintf("Order # %v, Store # %v, with %v bags to pick at %v", o.Id, o.StoreId, o.Quantity, o.PickupDetails)
 }
 
-func CreateOrdersFromListOrdersResponse(responseBody string) ([]Order, error) {
+func NewOrdersFromListOrdersResponse(responseBody string) ([]Order, error) {
 	if len(responseBody) == 0 {
 		return []Order{}, nil
 	}

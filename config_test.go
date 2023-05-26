@@ -25,6 +25,9 @@ func TestLoadConfig(t *testing.T) {
 			ActiveOrdersReminderPeriod: Duration{
 				Duration: time.Duration(10) * time.Minute,
 			},
+			TokenValidityDuration: Duration{
+				Duration: time.Duration(48) * time.Hour,
+			},
 			SearchConfig: SearchConfig{
 				Origin: Location{
 					Latitude:  41.902782,

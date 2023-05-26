@@ -1,6 +1,6 @@
-# Too good to go app in Golang
+# Too good ant
 
-Command line application communicating with Too Good to Go API.
+Command line automated application communicating with Too Good to Go API.
 
 Currently only list available stores and send email from a Gmail account once new stores are found.
 
@@ -29,3 +29,4 @@ When ant finds new available bags, it will send emails to addresses defined in t
 Launch with `./too-good-ant` and let the ant harvest for you.
 
 The whole configuration is provided by file `secrets/config.json`, `verbose` mode can be overridden by command line option `-v`.
+`-q` (quiet) allows to force disable verbose mode.

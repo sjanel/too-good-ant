@@ -1,0 +1,9 @@
+{
+    "payment_methods": [],
+    "provider_responses": [
+        {
+            "payment_provider": "BRAINTREE"
+        }
+    ],
+    "payment_methods_state": "SUCCESS"
+}

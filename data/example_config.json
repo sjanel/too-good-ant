@@ -4,6 +4,7 @@
         "language": "en-UK; fr-FR",
         "minRequestsPeriod": "30s",
         "activeOrdersReminderPeriod": "10m",
+        "tokenValidityDuration": "48h",
         "searchConfig": {
             "origin": {
                 "latitude": 41.902782,
