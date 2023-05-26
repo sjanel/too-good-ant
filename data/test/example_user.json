@@ -1,0 +1,12 @@
+{
+    "user_id": "1234",
+    "name": "Too good Ant",
+    "country_id": "IT",
+    "email": "ant.harvester@email.com",
+    "phone_country_code": "",
+    "phone_number": "",
+    "is_partner": false,
+    "newsletter_opt_in": true,
+    "push_notifications_opt_in": true,
+    "user_addresses": []
+}

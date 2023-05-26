@@ -6,17 +6,18 @@ import (
 )
 
 type Store struct {
-	Name   string
-	Id     string
-	Rating float64
-	Price  Price
+	Name          string
+	Id            string
+	Rating        float64
+	Price         Price
+	AvailableBags int
 }
 
 func (s *Store) String() string {
-	return fmt.Sprintf("%v, rated %v, price %v", s.Name, s.Rating, s.Price)
+	return fmt.Sprintf("%v, rated %v, price %v, %v available bags", s.Name, s.Rating, s.Price, s.AvailableBags)
 }
 
-func CreateStoresFromListStoresResponse(responseBody string) ([]Store, error) {
+func NewStoresFromListStoresResponse(responseBody string) ([]Store, error) {
 	if len(responseBody) == 0 {
 		return []Store{}, nil
 	}
@@ -47,6 +48,7 @@ func CreateStoresFromListStoresResponse(responseBody string) ([]Store, error) {
 		storeParsed := item["store"].(map[string]interface{})
 
 		stores[itemPos].Name = storeParsed["store_name"].(string)
+		stores[itemPos].AvailableBags = int(item["items_available"].(float64))
 	}
 
 	return stores, nil

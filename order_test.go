@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	kExampleOrderPath = "data/example_order.json"
+	kExampleOrderPath = "data/test/example_order.json"
 )
 
 func TestOrderEmptyResponse(t *testing.T) {
-	orders, err := CreateOrdersFromListOrdersResponse("")
+	orders, err := NewOrdersFromListOrdersResponse("")
 	if len(orders) > 0 || err != nil {
 		t.Fatalf("expected empty list of orders for empty response")
 	}
@@ -23,9 +23,9 @@ func TestOrderStandardResponse(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error reading file %v", kExampleOrderPath)
 	}
-	orders, err := CreateOrdersFromListOrdersResponse(string(responseBody))
+	orders, err := NewOrdersFromListOrdersResponse(string(responseBody))
 	if err != nil {
-		t.Fatalf("error in CreateOrdersFromListOrdersResponse: %v", err)
+		t.Fatalf("error in NewOrdersFromListOrdersResponse: %v", err)
 	}
 
 	nbExpectedOrders := 1

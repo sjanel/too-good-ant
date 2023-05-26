@@ -5,9 +5,7 @@ import (
 	"flag"
 	"log"
 	"os"
-	"os/signal"
 	"reflect"
-	"syscall"
 
 	"google.golang.org/api/gmail/v1"
 )
@@ -18,37 +16,24 @@ var (
 )
 
 func main() {
-	verbose := flag.Bool("v", false, "Trace requests information for debugging")
-	quiet := flag.Bool("q", false, "Quiet: force verbose deactivation")
+	forceVerbose := flag.Bool("v", false, "Trace requests information for debugging")
+	forceQuiet := flag.Bool("q", false, "Quiet: force verbose deactivation")
+	configFilePath := flag.String("conf", "secrets/config.json", "Configuration file path")
 
 	flag.Parse()
 
-	const kConfigFilePath = "secrets/config.json"
-
-	config, err := ReadConfigFromFile(kConfigFilePath)
+	config, err := ReadConfigFromFile(*configFilePath)
 	if os.IsNotExist(err) {
-		glog.Fatalf("you need to create file %v that will be loaded and used as your personal configuration", kConfigFilePath)
+		glog.Fatalf("you need to create file %v that will be loaded and used as your personal configuration", *configFilePath)
 	} else if err != nil {
 		glog.Fatalf("error from ReadConfigFromFile: %v", err)
 	}
 
-	if *quiet {
-		config.Verbose = false
-	} else if *verbose {
+	if *forceVerbose {
 		config.Verbose = true
+	} else if *forceQuiet {
+		config.Verbose = false
 	}
-
-	// Capture SIGTERM for graceful shutdown
-	stopSignalReceived := false
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, os.Interrupt)
-	signal.Notify(signalChan, syscall.SIGTERM)
-	go func() {
-		for sig := range signalChan {
-			glog.Printf("%v signal received\n", sig)
-			stopSignalReceived = true
-		}
-	}()
 
 	glog.Printf("starting too good to go ant for %v\n", config.TooGoodToGoConfig.AccountEmail)
 
@@ -63,7 +48,16 @@ func main() {
 		}
 	}
 
+	// Capture SIGTERM for graceful shutdown
+	stopSignalReceived := false
+	GracefulShutdownHook(&stopSignalReceived)
+
 	var lastStoresSent []Store
+
+	_, err = tooGoodToGoClient.PaymentMethods(Adyen)
+	if err != nil {
+		glog.Fatalf("error from PaymentMethods: %v", err)
+	}
 
 	for !stopSignalReceived {
 		stores, err := tooGoodToGoClient.ListStores()
@@ -82,7 +76,6 @@ func main() {
 				lastStoresSent = stores
 			}
 		}
-
 	}
 
 	err = tooGoodToGoClient.writeAuthorizationDataToFile()

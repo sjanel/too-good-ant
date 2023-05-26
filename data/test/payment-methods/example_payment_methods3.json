@@ -1,0 +1,45 @@
+{
+    "payment_methods": [
+        {
+            "type": "adyenSavedPaymentMethod",
+            "payment_provider": "ADYEN",
+            "payment_type": "CREDITCARD",
+            "preferred": true,
+            "adyen_api_payload": "{\"brand\":\"visa\",\"expiryMonth\":\"03\",\"expiryYear\":\"22\",\"holderName\":\"Checkout Shopper PlaceHolder\",\"id\":\"BHKI4N2GMWVU2S56\",\"lastFour\":\"1234\",\"name\":\"VISA / Carte Bancaire\",\"networkTxReference\":\"123456789\",\"supportedShopperInteractions\":[\"Ecommerce\",\"ContAuth\"],\"type\":\"scheme\"}",
+            "show_zip_code": false,
+            "identifier": "BHKI4N2GMWVU2S56",
+            "display_value": "•••• 1234",
+            "status": "ACTIVE"
+        },
+        {
+            "type": "adyenPaymentMethod",
+            "payment_provider": "ADYEN",
+            "payment_type": "CREDITCARD",
+            "preferred": false,
+            "adyen_api_payload": "{\"brands\":[\"cartebancaire\",\"maestro\",\"mc\",\"visa\"],\"name\":\"Carte bancaire\",\"type\":\"scheme\"}",
+            "show_zip_code": false
+        },
+        {
+            "type": "adyenPaymentMethod",
+            "payment_provider": "ADYEN",
+            "payment_type": "GOOGLEPAY",
+            "preferred": false,
+            "adyen_api_payload": "{\"brands\":[\"visa\",\"mc\"],\"configuration\":{\"merchantId\":\"01233456789132456\",\"gatewayMerchantId\":\"TooGoodToGoFR\"},\"name\":\"Google Pay\",\"type\":\"paywithgoogle\"}",
+            "show_zip_code": false
+        },
+        {
+            "type": "adyenPaymentMethod",
+            "payment_provider": "ADYEN",
+            "payment_type": "PAYPAL",
+            "preferred": false,
+            "adyen_api_payload": "{\"configuration\":{\"intent\":\"authorize\"},\"name\":\"PayPal\",\"type\":\"paypal\"}",
+            "show_zip_code": false
+        }
+    ],
+    "provider_responses": [
+        {
+            "payment_provider": "ADYEN"
+        }
+    ],
+    "payment_methods_state": "SUCCESS"
+}

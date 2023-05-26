@@ -23,6 +23,7 @@ type TooGoodToGoConfig struct {
 	Language                   string       `json:"language"`
 	MinRequestsPeriod          Duration     `json:"minRequestsPeriod"`
 	ActiveOrdersReminderPeriod Duration     `json:"activeOrdersReminderPeriod"`
+	TokenValidityDuration      Duration     `json:"tokenValidityDuration"`
 	SearchConfig               SearchConfig `json:"searchConfig"`
 	UseGzipEncoding            bool         `json:"useGzipEncoding"`
 }
