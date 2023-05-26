@@ -41,7 +41,7 @@ func NewPaymentProvider(str string) (PaymentProvider, error) {
 	if str == "SATISPAY" {
 		return Satispay, nil
 	}
-	return 0, fmt.Errorf("unknown payment provider %v", str)
+	return -1, fmt.Errorf("unknown payment provider %v", str)
 }
 
 func (p PaymentProvider) MarshalJSON() ([]byte, error) {
@@ -49,7 +49,7 @@ func (p PaymentProvider) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PaymentProvider) UnmarshalJSON(b []byte) error {
-	paymentProvider, err := NewPaymentProvider(string(b))
+	paymentProvider, err := NewPaymentProvider(string(b[1 : len(b)-1]))
 	if err != nil {
 		return fmt.Errorf("error from NewPaymentProvider: %w", err)
 	}
@@ -162,7 +162,7 @@ func NewPaymentType(str string) (PaymentType, error) {
 	if str == "SOFORT" {
 		return SoFort, nil
 	}
-	return 0, fmt.Errorf("unknown payment type %v", str)
+	return -1, fmt.Errorf("unknown payment type %v", str)
 }
 
 func (p PaymentType) MarshalJSON() ([]byte, error) {
@@ -170,7 +170,7 @@ func (p PaymentType) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PaymentType) UnmarshalJSON(b []byte) error {
-	paymentType, err := NewPaymentType(string(b))
+	paymentType, err := NewPaymentType(string(b[1 : len(b)-1]))
 	if err != nil {
 		return fmt.Errorf("error from NewPaymentType: %w", err)
 	}

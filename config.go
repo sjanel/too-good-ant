@@ -40,14 +40,56 @@ type SearchConfig struct {
 	WithStockOnly bool     `json:"withStockOnly"`
 }
 
+type SendActionType int
+
 const (
-	kNoSend    string = ""
-	kSendEmail        = "email"
+	NoSend SendActionType = iota
+	SendEmail
+	SendWhatsApp
 )
 
+func (s SendActionType) String() string {
+	switch s {
+	case NoSend:
+		return ""
+	case SendEmail:
+		return "email"
+	case SendWhatsApp:
+		return "whatsapp"
+	}
+	return "<error>"
+}
+
+func NewSendActionType(str string) (SendActionType, error) {
+	if str == "" {
+		return NoSend, nil
+	}
+	if str == "email" {
+		return SendEmail, nil
+	}
+	if str == "whatsapp" {
+		return SendWhatsApp, nil
+	}
+	return -1, fmt.Errorf("unknown send action type %v", str)
+}
+
+func (s SendActionType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.String())
+}
+
+func (s *SendActionType) UnmarshalJSON(b []byte) error {
+	sendAction, err := NewSendActionType(string(b[1 : len(b)-1]))
+	if err != nil {
+		return fmt.Errorf("error from NewSendActionType: %w", err)
+	}
+	*s = sendAction
+	return nil
+}
+
 type SendConfig struct {
-	EmailConfig EmailConfig `json:"emailConfig"`
-	SendAction  string      `json:"sendAction"`
+	EmailConfig    EmailConfig    `json:"emailConfig"`
+	WhatsAppConfig WhatsAppConfig `json:"whatsAppConfig"`
+	SendAction     SendActionType `json:"sendAction"`
 }
 
 type EmailConfig struct {
@@ -55,6 +97,11 @@ type EmailConfig struct {
 	EmailTo           string `json:"emailTo"`
 	GmailApiKeyFile   string `json:"gmailApiKeyFile"`
 	OauthPortCallback int    `json:"oauthPortCallBack"`
+}
+
+type WhatsAppConfig struct {
+	GroupNameTo string `json:"groupNameTo"`
+	UserNameTo  string `json:"userNameTo"`
 }
 
 func ReadConfigFromFile(filePath string) (*Config, error) {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"log"
 	"net/http"
@@ -36,7 +35,7 @@ func SetupConfig(emailConfig EmailConfig) (*oauth2.Config, error) {
 	return config, nil
 }
 
-func CreateGmailService(emailConfig EmailConfig) (*gmail.Service, error) {
+func NewGmailClient(emailConfig EmailConfig) (*gmail.Service, error) {
 	config, err := SetupConfig(emailConfig)
 	if err != nil {
 		return nil, fmt.Errorf("error from SetupConfig: %w", err)
@@ -75,33 +74,6 @@ func CreateGmailService(emailConfig EmailConfig) (*gmail.Service, error) {
 	glog.Printf("gmail service successfully authenticated\n")
 
 	return gmailService, nil
-}
-
-func SendStoresByEmail(gmailService *gmail.Service, emailConfig EmailConfig, stores []Store) {
-	// New message for our gmail service to send
-	var message gmail.Message
-
-	// Compose the message
-	messageStr := fmt.Sprintf(
-		"From: %s\r\n"+
-			"To: %s\r\n"+
-			"Subject: [Too good to go] - Available bags!\r\n\r\n", emailConfig.EmailFrom, emailConfig.EmailTo)
-
-	for _, store := range stores {
-		messageStr += store.String()
-		messageStr += "\n"
-	}
-
-	// Place messageStr into message.Raw in base64 encoded format
-	message.Raw = base64.URLEncoding.EncodeToString([]byte(messageStr))
-
-	// Send the message
-	_, err := gmailService.Users.Messages.Send("me", &message).Do()
-	if err != nil {
-		glog.Printf("error from gmailService.Users.Messages.Send: %v", err)
-	} else {
-		glog.Printf("message sent to %v\n", emailConfig.EmailTo)
-	}
 }
 
 func AuthCodeValidationCallBack(srv *http.Server, codeChan chan<- string) http.HandlerFunc {

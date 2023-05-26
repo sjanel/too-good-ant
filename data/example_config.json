@@ -23,6 +23,10 @@
             "gmailApiKeyFile": "secrets/client_secret_123456.apps.googleusercontent.com.json",
             "oauthPortCallback": 10010
         },
+        "whatsAppConfig": {
+            "groupNameTo": "My WhatsApp Group Name",
+            "userNameTo": "My WhatsApp User Name"
+        },
         "sendAction": "email"
     },
     "verbose": false
