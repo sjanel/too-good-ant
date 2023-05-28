@@ -40,7 +40,7 @@ func main() {
 	}
 	defer sender.Close()
 
-	glog.Printf("starting too good to go ant for %v\n", config.TooGoodToGoConfig.AccountEmail)
+	glog.Printf("starting too good to go ant for %v\n", config.TooGoodToGoConfig.AccountsEmail)
 
 	tooGoodToGoClient := NewTooGooToGoClient(&config.TooGoodToGoConfig, config.Verbose)
 

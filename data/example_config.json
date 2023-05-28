@@ -1,8 +1,12 @@
 {
     "tooGoodToGoConfig": {
-        "accountEmail": "myemail@email.com",
+        "accountsEmail": [
+            "myemail1@email.com",
+            "myemail2@email.com"
+        ],
         "language": "en-UK; fr-FR",
-        "minRequestsPeriod": "30s",
+        "averageRequestsPeriod": "45s",
+        "tooManyRequestsPausePeriod": "1h30m",
         "activeOrdersReminderPeriod": "10m",
         "tokenValidityDuration": "48h",
         "searchConfig": {
