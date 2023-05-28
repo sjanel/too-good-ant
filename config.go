@@ -19,9 +19,10 @@ type Duration struct {
 }
 
 type TooGoodToGoConfig struct {
-	AccountEmail               string       `json:"accountEmail"`
+	AccountsEmail              []string     `json:"accountsEmail"`
 	Language                   string       `json:"language"`
-	MinRequestsPeriod          Duration     `json:"minRequestsPeriod"`
+	AverageRequestsPeriod      Duration     `json:"averageRequestsPeriod"`
+	TooManyRequestsPausePeriod Duration     `json:"tooManyRequestsPausePeriod"`
 	ActiveOrdersReminderPeriod Duration     `json:"activeOrdersReminderPeriod"`
 	TokenValidityDuration      Duration     `json:"tokenValidityDuration"`
 	SearchConfig               SearchConfig `json:"searchConfig"`
@@ -115,6 +116,10 @@ func ReadConfigFromFile(filePath string) (*Config, error) {
 	err = json.Unmarshal(configDataBytes, config)
 	if err != nil {
 		return nil, fmt.Errorf("error from json.Unmarshal: %w", err)
+	}
+
+	if len(config.TooGoodToGoConfig.AccountsEmail) == 0 {
+		return nil, fmt.Errorf("you need to specify at least one too good to go email account\n")
 	}
 
 	glog.Printf("loaded configuration from %v\n", filePath)

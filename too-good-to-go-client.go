@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"math/rand"
@@ -41,11 +40,61 @@ type TooGooToGoClient struct {
 	UserAgent         string             `json:"userAgent"`
 	LastRefreshedTime time.Time          `json:"lastRefreshedTime"`
 
-	lastQueryTime             time.Time    `json:"-"`
+	currentAccountPos         int          `json:"-"`
+	lastQueryTimePerAccount   []time.Time  `json:"-"`
 	lastOpenedOrdersQueryTime time.Time    `json:"-"`
 	httpClient                *http.Client `json:"-"`
-	captchaSolved             bool         `json:"-"`
 	verbose                   bool         `json:"-"`
+}
+
+func (client TooGooToGoClient) emailAccount() string {
+	return client.Config.AccountsEmail[client.currentAccountPos]
+}
+
+func NewHttpClient() *http.Client {
+	return &http.Client{
+		Timeout: 15 * time.Second,
+	}
+}
+
+func (client *TooGooToGoClient) incrCurrentAccountPos() {
+	nbAccounts := len(client.Config.AccountsEmail)
+	if nbAccounts == 1 {
+		return
+	}
+
+	client.currentAccountPos++
+	if client.currentAccountPos == nbAccounts {
+		client.currentAccountPos = 0
+	}
+
+	glog.Printf("switched to too good to go account %v\n", client.emailAccount())
+}
+
+func (client *TooGooToGoClient) switchToNextEmailAccount() error {
+
+	client.AccessToken = ""
+	client.httpClient = NewHttpClient()
+	client.Cookie = []string{}
+
+	client.incrCurrentAccountPos()
+
+	if client.currentAccountPos == 0 {
+		tooManyRequestsPauseDuration := client.Config.TooManyRequestsPausePeriod.Duration
+		minTimeBeforeNextRequest := client.lastQueryTime().Add(tooManyRequestsPauseDuration)
+		nowTime := time.Now()
+		if nowTime.Before(minTimeBeforeNextRequest) {
+			waitingDuration := minTimeBeforeNextRequest.Sub(nowTime)
+			glog.Printf("waiting %v as too many requests reached\n", waitingDuration)
+			time.Sleep(waitingDuration)
+		}
+	}
+
+	err := client.loginOrRefreshToken()
+	if err != nil {
+		return fmt.Errorf("error from client.LoginOrRefreshToken: %w", err)
+	}
+	return nil
 }
 
 func NewTooGooToGoClient(config *TooGoodToGoConfig, verbose bool) *TooGooToGoClient {
@@ -61,15 +110,16 @@ func NewTooGooToGoClient(config *TooGoodToGoConfig, verbose bool) *TooGooToGoCli
 	}
 
 	userAgent := kUserAgents[rand.Intn(len(kUserAgents))]
+	lastQueryTimePerAccount := make([]time.Time, len(config.AccountsEmail))
 
 	return &TooGooToGoClient{
 		Config:     config,
 		ApkVersion: lastApkVersion,
-		httpClient: &http.Client{
-			Timeout: 15 * time.Second,
-		},
-		UserAgent: userAgent,
-		verbose:   verbose,
+		httpClient: NewHttpClient(),
+		UserAgent:  userAgent,
+		verbose:    verbose,
+
+		lastQueryTimePerAccount: lastQueryTimePerAccount,
 	}
 }
 
@@ -127,7 +177,7 @@ func (client *TooGooToGoClient) writeAuthorizationDataToFile() error {
 }
 
 func (client *TooGooToGoClient) latestAuthorizationFileName() string {
-	return fmt.Sprintf("secrets/tooGoodToGoClient.%v.latest.json", client.Config.AccountEmail)
+	return fmt.Sprintf("secrets/tooGoodToGoClient.%v.latest.json", client.emailAccount())
 }
 
 func (client *TooGooToGoClient) removeLatestAuthorizationFileName() {
@@ -182,12 +232,12 @@ func (client *TooGooToGoClient) loginOrRefreshToken() error {
 		client.removeLatestAuthorizationFileName()
 	}
 
-	glog.Printf("too good to go log in for %v...\n", client.Config.AccountEmail)
+	glog.Printf("too good to go log in for %v...\n", client.emailAccount())
 
 	jsonDataBeg := fmt.Sprintf(`{
 		"device_type": "ANDROID",
 		"email": "%v"`,
-		client.Config.AccountEmail,
+		client.emailAccount(),
 	)
 
 	authData := jsonDataBeg + "}"
@@ -209,7 +259,7 @@ func (client *TooGooToGoClient) loginOrRefreshToken() error {
 	}
 
 	if state == "TERMS" {
-		return fmt.Errorf("email %v does not seem to be associated with a too good to go account, retry with another mail", client.Config.AccountEmail)
+		return fmt.Errorf("email %v does not seem to be associated with a too good to go account, retry with another mail", client.emailAccount())
 	}
 	if state == "WAIT" {
 		pollingId, hasPollingId := parsedResponse["polling_id"]
@@ -229,11 +279,11 @@ func (client *TooGooToGoClient) loginOrRefreshToken() error {
 }
 
 func (client *TooGooToGoClient) initiateLogin(jsonDataPolling string) error {
-	glog.Printf("too good to go validation email sent to %v - you need to validate login", client.Config.AccountEmail)
+	glog.Printf("too good to go validation email sent to %v - you need to validate login", client.emailAccount())
 	const kMaxPollingRetries = 20
 
 	for retryPos := 0; retryPos < kMaxPollingRetries; retryPos++ {
-		glog.Printf("check %v/%v validation (check %v inbox)...\n", retryPos+1, kMaxPollingRetries, client.Config.AccountEmail)
+		glog.Printf("check %v/%v validation (check %v inbox)...\n", retryPos+1, kMaxPollingRetries, client.emailAccount())
 		response, err := client.query("POST", kAuthByRequestPollingId, []byte(jsonDataPolling), true)
 		if err != nil {
 			return fmt.Errorf("error from client.Query: %w", err)
@@ -602,6 +652,11 @@ func (client *TooGooToGoClient) query(method, path string, body []byte, sleepIfN
 		printHeaders(req.URL, "response", &res.Header)
 	}
 
+	retry, err := client.checkStatusCode(res.StatusCode)
+	if retry {
+		return client.query(method, path, body, sleepIfNeeded)
+	}
+
 	ret.StatusCode = res.StatusCode
 
 	var resBodyReader io.Reader
@@ -623,7 +678,7 @@ func (client *TooGooToGoClient) query(method, path string, body []byte, sleepIfN
 		return ret, fmt.Errorf("error from io.ReadAll: %w", err)
 	}
 
-	retry, err := client.checkCaptcha(uncompressedResponse)
+	retry, err = client.checkCaptcha(uncompressedResponse)
 	if retry {
 		return client.query(method, path, body, sleepIfNeeded)
 	}
@@ -642,6 +697,26 @@ func (client *TooGooToGoClient) setCookie(header *http.Header) {
 	}
 }
 
+func (client *TooGooToGoClient) checkStatusCode(statusCode int) (bool, error) {
+	switch statusCode {
+	case http.StatusOK:
+		return false, nil
+	case http.StatusUnauthorized:
+		glog.Printf("http status %v received, login again\n", statusCode)
+		client.removeLatestAuthorizationFileName()
+		// force re-login
+		*client = *NewTooGooToGoClient(client.Config, client.verbose)
+
+		err := client.loginOrRefreshToken()
+		if err != nil {
+			return false, fmt.Errorf("error from client.LoginOrRefreshToken: %w", err)
+		}
+		return true, nil
+	default:
+		return false, fmt.Errorf("http status %v received\n", statusCode)
+	}
+}
+
 func (client *TooGooToGoClient) checkCaptcha(uncompressedResponse []byte) (bool, error) {
 	var parsedResponse map[string]string
 	err := json.Unmarshal(uncompressedResponse, &parsedResponse)
@@ -650,42 +725,44 @@ func (client *TooGooToGoClient) checkCaptcha(uncompressedResponse []byte) (bool,
 	}
 
 	urlCaptcha, hasUrlCaptcha := parsedResponse["url"]
-	if hasUrlCaptcha {
-		if client.captchaSolved {
-			return false, errors.New("new captcha detected - unable to proceed further")
+	if hasUrlCaptcha && strings.HasPrefix(urlCaptcha, "https://geo.captcha-delivery.com") {
+		glog.Printf("captcha detected\n")
+		err = OpenBrowser(urlCaptcha)
+		if err != nil {
+			return false, fmt.Errorf("error from OpenBrowser: %w", err)
 		}
-		if strings.HasPrefix(urlCaptcha, "https://geo.captcha-delivery.com") {
-			glog.Printf("you need to solve captcha manually")
-			err = OpenBrowser(urlCaptcha)
-			if err != nil {
-				return false, fmt.Errorf("error in OpenBrowser: %w", err)
-			}
-			client.captchaSolved = true
-			return true, nil
+		err = client.switchToNextEmailAccount()
+		if err != nil {
+			return false, fmt.Errorf("error from client.switchToNextEmailAccount: %w\n", err)
 		}
+		return true, nil
 	}
-	client.captchaSolved = false
 
 	return false, nil
 }
 
 func (client *TooGooToGoClient) nextQueryDelay() time.Duration {
-	minRequestsPeriod := client.Config.MinRequestsPeriod.Duration
+	minRequestsPeriod := (2 * client.Config.AverageRequestsPeriod.Duration) / 3
 	randomExtraDuration := time.Duration(rand.Int63n(minRequestsPeriod.Nanoseconds()))
 	return minRequestsPeriod + randomExtraDuration
 }
 
+func (client *TooGooToGoClient) lastQueryTime() *time.Time {
+	return &client.lastQueryTimePerAccount[client.currentAccountPos]
+}
+
 func (client *TooGooToGoClient) sleepIfNeeded() {
 	nowTime := time.Now()
-	if !client.lastQueryTime.IsZero() {
-		elapsedTimeSinceLastQuery := nowTime.Sub(client.lastQueryTime)
+	lastQueryTime := client.lastQueryTime()
+	if !lastQueryTime.IsZero() {
+		elapsedTimeSinceLastQuery := nowTime.Sub(*lastQueryTime)
 		waitingTime := client.nextQueryDelay() - elapsedTimeSinceLastQuery
 		if waitingTime > 0 {
 			time.Sleep(waitingTime)
 			nowTime = nowTime.Add(waitingTime)
 		}
 	}
-	client.lastQueryTime = nowTime
+	*lastQueryTime = nowTime
 }
 
 func (client *TooGooToGoClient) canListOpenedOrders() bool {

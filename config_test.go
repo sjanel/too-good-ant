@@ -1,6 +1,7 @@
 package main
 
 import (
+	"reflect"
 	"testing"
 	"time"
 )
@@ -17,10 +18,16 @@ func TestLoadConfig(t *testing.T) {
 
 	expectedConfig := Config{
 		TooGoodToGoConfig: TooGoodToGoConfig{
-			AccountEmail: "myemail@email.com",
-			Language:     "en-UK; fr-FR",
-			MinRequestsPeriod: Duration{
-				Duration: time.Duration(30) * time.Second,
+			AccountsEmail: []string{
+				"myemail1@email.com",
+				"myemail2@email.com",
+			},
+			Language: "en-UK; fr-FR",
+			AverageRequestsPeriod: Duration{
+				Duration: time.Duration(45) * time.Second,
+			},
+			TooManyRequestsPausePeriod: Duration{
+				Duration: time.Duration(1)*time.Hour + time.Duration(30)*time.Minute,
 			},
 			ActiveOrdersReminderPeriod: Duration{
 				Duration: time.Duration(10) * time.Minute,
@@ -55,7 +62,7 @@ func TestLoadConfig(t *testing.T) {
 		Verbose: false,
 	}
 
-	if expectedConfig != *config {
+	if !reflect.DeepEqual(expectedConfig, *config) {
 		t.Fatalf("expected config %v, got %v", expectedConfig, config)
 	}
 }
