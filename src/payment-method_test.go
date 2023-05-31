@@ -1,4 +1,4 @@
-package main
+package tga
 
 import (
 	"os"
@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	kExamplePaymentMethod1 = "data/test/payment-methods/example_payment_methods1.json"
-	kExamplePaymentMethod2 = "data/test/payment-methods/example_payment_methods2.json"
-	kExamplePaymentMethod3 = "data/test/payment-methods/example_payment_methods3.json"
+	kExamplePaymentMethod1 = "testdata/payment-methods/example_payment_methods1.json"
+	kExamplePaymentMethod2 = "testdata/payment-methods/example_payment_methods2.json"
+	kExamplePaymentMethod3 = "testdata/payment-methods/example_payment_methods3.json"
 )
 
 func TestPaymentMethodEmpty1(t *testing.T) {

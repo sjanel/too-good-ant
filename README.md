@@ -6,15 +6,19 @@ Currently only list available stores and send email from a Gmail account once ne
 
 Note: **This app is currently under development**
 
-## Install
+## Compilation
 
 Easy with [go](https://go.dev/dl/):
 
-Compile with `go build .` from current directory.
+Compile with `go build .` from top level repository directory. It will create the executable `too-good-ant` in current directory.
+
+## Tests
+
+Run all tests of the repository with `go test ./...`.
 
 ## Config
 
-Based on [data/example_config.json](data/example_config.json), write your own private configuration in `secrets/config.json`.
+Based on [example_config.json](src/testdata/example_config.json), write your own private configuration in `secrets/config.json`.
 
 The minimum configuration changes that you need to update is obviously the email accounts, the origin (latitude, longitude) of the center of the search and the `sendConfig` information (`sendConfig.sendAction` can be set to `email`, `whatsapp` or an empty string to disable notifications).
 
@@ -30,7 +34,7 @@ When ant finds new available bags, it will send emails to addresses defined in t
 
 ### What's App message connector
 
-If you wish to be alerted by What's App, you can set `sendConfig.sendAction` to `whatsapp` and the tool will first ask to register a new device thanks to a QR code authentification.
+If you wish to be alerted by What's App, you can set `sendConfig.sendAction` to `whatsapp` and the tool will first ask to register a new device thanks to a QR code authentication.
 This step is only required for the first connection - then you credentials will be stored in a secret file (do not publish it anywhere) `secrets/whatsapp.db` for the next runs.
 
 Set either a **group name**  (`sendConfig.whatsAppConfig.groupNameTo`) or a **user name** (`sendConfig.whatsAppConfig.userNameTo`) that will receive this application's messages.

@@ -1,4 +1,4 @@
-package main
+package tga
 
 import (
 	"os"
@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	kExampleOrderPath = "data/test/example_order.json"
+	kExampleOrderPath = "testdata/example_order.json"
 )
 
 func TestOrderEmptyResponse(t *testing.T) {

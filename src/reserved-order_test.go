@@ -1,4 +1,4 @@
-package main
+package tga
 
 import (
 	"os"
@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	kExampleReservedOrder = "data/test/example_reserved_order.json"
+	kExampleReservedOrder = "testdata/example_reserved_order.json"
 )
 
 func TestReservedOrderStandardResponse(t *testing.T) {
