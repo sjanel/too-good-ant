@@ -1,8 +1,14 @@
 {
     "tooGoodToGoConfig": {
-        "accountsEmail": [
-            "myemail1@email.com",
-            "myemail2@email.com"
+        "accounts": [
+            {
+                "email": "myemail1@email.com",
+                "userAgent": "<MyUserAgent1-OrEmpty>"
+            },
+            {
+                "email": "myemail2@email.com",
+                "userAgent": "<MyUserAgent2-OrEmpty>"
+            }
         ],
         "language": "en-UK; fr-FR",
         "averageRequestsPeriod": "45s",

@@ -20,11 +20,11 @@ func (p PaymentMethod) String() string {
 	return fmt.Sprintf("%v%v, isPreferred=%v", p.PaymentType, p.DisplayValue, p.IsPreferred)
 }
 
-func NewPaymentMethodsFromPaymentMethodsResponse(responseBody string) ([]PaymentMethod, error) {
+func NewPaymentMethodsFromPaymentMethodsResponse(responseBody []byte) ([]PaymentMethod, error) {
 	var parsedPaymentMethods map[string]interface{}
-	err := json.Unmarshal([]byte(responseBody), &parsedPaymentMethods)
+	err := json.Unmarshal(responseBody, &parsedPaymentMethods)
 	if err != nil {
-		glog.Printf("full response: %v\n", responseBody)
+		glog.Printf("full response: %v\n", string(responseBody))
 		return []PaymentMethod{}, fmt.Errorf("error from json.Unmarshal: %w", err)
 	}
 

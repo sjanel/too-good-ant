@@ -15,16 +15,16 @@ func (o *ReservedOrder) String() string {
 	return fmt.Sprintf("Order # %v in store %v with %v bags", o.Id, o.StoreId, o.Quantity)
 }
 
-func NewReservedOrderFromCreateOrder(responseBody string) (ReservedOrder, error) {
+func NewReservedOrderFromCreateOrder(responseBody []byte) (ReservedOrder, error) {
 	var reservedOrder ReservedOrder
 	if len(responseBody) == 0 {
 		return reservedOrder, nil
 	}
 
 	var parsedReservedOrder map[string]interface{}
-	err := json.Unmarshal([]byte(responseBody), &parsedReservedOrder)
+	err := json.Unmarshal(responseBody, &parsedReservedOrder)
 	if err != nil {
-		glog.Printf("full response: %v\n", responseBody)
+		glog.Printf("full response: %v\n", string(responseBody))
 		return reservedOrder, fmt.Errorf("error from json.Unmarshal: %w", err)
 	}
 

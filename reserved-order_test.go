@@ -14,7 +14,7 @@ func TestReservedOrderStandardResponse(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error reading file %v", kExampleReservedOrder)
 	}
-	reservedOrder, err := NewReservedOrderFromCreateOrder(string(responseBody))
+	reservedOrder, err := NewReservedOrderFromCreateOrder(responseBody)
 	if err != nil {
 		t.Fatalf("error in NewReservedOrderFromCreateOrder")
 	}

@@ -31,15 +31,15 @@ func (o *Order) String() string {
 	return fmt.Sprintf("Order # %v, Store # %v, with %v bags to pick at %v", o.Id, o.StoreId, o.Quantity, o.PickupDetails)
 }
 
-func NewOrdersFromListOrdersResponse(responseBody string) ([]Order, error) {
+func NewOrdersFromListOrdersResponse(responseBody []byte) ([]Order, error) {
 	if len(responseBody) == 0 {
 		return []Order{}, nil
 	}
 
 	var parsedOrders map[string]interface{}
-	err := json.Unmarshal([]byte(responseBody), &parsedOrders)
+	err := json.Unmarshal(responseBody, &parsedOrders)
 	if err != nil {
-		glog.Printf("full response: %v\n", responseBody)
+		glog.Printf("full response: %v\n", string(responseBody))
 		return []Order{}, fmt.Errorf("error from json.Unmarshal: %w", err)
 	}
 
