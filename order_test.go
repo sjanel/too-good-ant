@@ -12,7 +12,7 @@ const (
 )
 
 func TestOrderEmptyResponse(t *testing.T) {
-	orders, err := NewOrdersFromListOrdersResponse("")
+	orders, err := NewOrdersFromListOrdersResponse([]byte{})
 	if len(orders) > 0 || err != nil {
 		t.Fatalf("expected empty list of orders for empty response")
 	}
@@ -23,7 +23,7 @@ func TestOrderStandardResponse(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error reading file %v", kExampleOrderPath)
 	}
-	orders, err := NewOrdersFromListOrdersResponse(string(responseBody))
+	orders, err := NewOrdersFromListOrdersResponse(responseBody)
 	if err != nil {
 		t.Fatalf("error in NewOrdersFromListOrdersResponse: %v", err)
 	}

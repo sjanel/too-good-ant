@@ -16,7 +16,7 @@ func TestPaymentMethodEmpty1(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error reading file %v", kExamplePaymentMethod1)
 	}
-	paymentMethods, err := NewPaymentMethodsFromPaymentMethodsResponse(string(responseBody))
+	paymentMethods, err := NewPaymentMethodsFromPaymentMethodsResponse(responseBody)
 	if err != nil {
 		t.Fatalf("error in NewPaymentMethodsFromPaymentMethodsResponse: %v", err)
 	}
@@ -31,7 +31,7 @@ func TestPaymentMethodEmpty2(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error reading file %v", kExamplePaymentMethod2)
 	}
-	paymentMethods, err := NewPaymentMethodsFromPaymentMethodsResponse(string(responseBody))
+	paymentMethods, err := NewPaymentMethodsFromPaymentMethodsResponse(responseBody)
 	if err != nil {
 		t.Fatalf("error in NewPaymentMethodsFromPaymentMethodsResponse: %v", err)
 	}
@@ -46,7 +46,7 @@ func TestPaymentMethodNonEmpty(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error reading file %v", kExamplePaymentMethod3)
 	}
-	paymentMethods, err := NewPaymentMethodsFromPaymentMethodsResponse(string(responseBody))
+	paymentMethods, err := NewPaymentMethodsFromPaymentMethodsResponse(responseBody)
 	if err != nil {
 		t.Fatalf("error in NewPaymentMethodsFromPaymentMethodsResponse: %v", err)
 	}

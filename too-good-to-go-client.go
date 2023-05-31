@@ -2,10 +2,8 @@ package main
 
 import (
 	"bytes"
-	"compress/gzip"
 	"encoding/json"
 	"fmt"
-	"io"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -32,7 +30,6 @@ const (
 
 type TooGooToGoClient struct {
 	Config            *TooGoodToGoConfig `json:"-"`
-	ApkVersion        string             `json:"apkVersion"`
 	AccessToken       string             `json:"accessToken"`
 	RefreshToken      string             `json:"refreshToken"`
 	Cookie            []string           `json:"cookie"`
@@ -48,7 +45,7 @@ type TooGooToGoClient struct {
 }
 
 func (client TooGooToGoClient) emailAccount() string {
-	return client.Config.AccountsEmail[client.currentAccountPos]
+	return client.Config.Accounts[client.currentAccountPos].Email
 }
 
 func NewHttpClient() *http.Client {
@@ -58,7 +55,7 @@ func NewHttpClient() *http.Client {
 }
 
 func (client *TooGooToGoClient) incrCurrentAccountPos() {
-	nbAccounts := len(client.Config.AccountsEmail)
+	nbAccounts := len(client.Config.Accounts)
 	if nbAccounts == 1 {
 		return
 	}
@@ -79,6 +76,12 @@ func (client *TooGooToGoClient) switchToNextEmailAccount() error {
 
 	client.incrCurrentAccountPos()
 
+	var err error
+	client.UserAgent, err = getUserAgent(client.Config, client.currentAccountPos)
+	if err != nil {
+		glog.Fatalf("error from getUserAgent: %v", err)
+	}
+
 	if client.currentAccountPos == 0 {
 		tooManyRequestsPauseDuration := client.Config.TooManyRequestsPausePeriod.Duration
 		minTimeBeforeNextRequest := client.lastQueryTime().Add(tooManyRequestsPauseDuration)
@@ -90,33 +93,47 @@ func (client *TooGooToGoClient) switchToNextEmailAccount() error {
 		}
 	}
 
-	err := client.loginOrRefreshToken()
+	err = client.loginOrRefreshToken()
 	if err != nil {
 		return fmt.Errorf("error from client.LoginOrRefreshToken: %w", err)
 	}
 	return nil
 }
 
-func NewTooGooToGoClient(config *TooGoodToGoConfig, verbose bool) *TooGooToGoClient {
+func getUserAgent(config *TooGoodToGoConfig, accountPos int) (string, error) {
+	userAgent := config.Accounts[accountPos].UserAgent
+	if len(userAgent) > 0 {
+		return userAgent, nil
+	}
+
 	lastApkVersion, err := GetLastApkVersion()
 	if err != nil {
-		glog.Fatalf("error from GetLastApkVersion: %v", err)
+		return "", fmt.Errorf("error from GetLastApkVersion: %w", err)
 	}
+
+	const kDalvikVersion = "2.1.0"
 
 	kUserAgents := [...]string{
-		fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; U; Android 9; Nexus 5 Build/M4B30Z)", lastApkVersion),
-		fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; U; Android 10; SM-G935F Build/NRD90M)", lastApkVersion),
-		fmt.Sprintf("TGTG/%v Dalvik/2.1.0 (Linux; Android 12; SM-G920V Build/MMB29K)", lastApkVersion),
+		fmt.Sprintf("TGTG/%v Dalvik/%v (Linux; Android 12; SM-G973F Build/SP1A.210812.016; wv)", lastApkVersion, kDalvikVersion),
+		fmt.Sprintf("TGTG/%v Dalvik/%v (Linux; Android 12; SM-G975U1 Build/SP1A.210812.016; wv)", lastApkVersion, kDalvikVersion),
+		fmt.Sprintf("TGTG/%v Dalvik/%v (Linux; Android 13; SAMSUNG SM-G991U1)", lastApkVersion, kDalvikVersion),
 	}
 
-	userAgent := kUserAgents[rand.Intn(len(kUserAgents))]
-	lastQueryTimePerAccount := make([]time.Time, len(config.AccountsEmail))
+	return kUserAgents[rand.Intn(len(kUserAgents))], nil
+}
+
+func NewTooGooToGoClient(config *TooGoodToGoConfig, verbose bool) *TooGooToGoClient {
+	firstUserAgent, err := getUserAgent(config, 0)
+	if err != nil {
+		glog.Fatalf("error from getUserAgent: %v", err)
+	}
+
+	lastQueryTimePerAccount := make([]time.Time, len(config.Accounts))
 
 	return &TooGooToGoClient{
 		Config:     config,
-		ApkVersion: lastApkVersion,
 		httpClient: NewHttpClient(),
-		UserAgent:  userAgent,
+		UserAgent:  firstUserAgent,
 		verbose:    verbose,
 
 		lastQueryTimePerAccount: lastQueryTimePerAccount,
@@ -144,7 +161,7 @@ func (client *TooGooToGoClient) refreshToken() error {
 	}
 
 	var parsedBody map[string]interface{}
-	err = json.Unmarshal([]byte(response.Body), &parsedBody)
+	err = json.Unmarshal(response.Body, &parsedBody)
 	if err != nil {
 		return fmt.Errorf("error from json.Unmarshal: %w", err)
 	}
@@ -203,7 +220,7 @@ func (client *TooGooToGoClient) readAuthorizationDataFromLatestFile() error {
 		return fmt.Errorf("error in os.ReadFile: %w", err)
 	}
 
-	err = json.Unmarshal([]byte(fileData), client)
+	err = json.Unmarshal(fileData, client)
 	if err != nil {
 		defer client.removeLatestAuthorizationFileName()
 		return fmt.Errorf("error in json.Unmarshal: %w", err)
@@ -248,7 +265,7 @@ func (client *TooGooToGoClient) loginOrRefreshToken() error {
 	}
 
 	var parsedResponse map[string]string
-	err = json.Unmarshal([]byte(response.Body), &parsedResponse)
+	err = json.Unmarshal(response.Body, &parsedResponse)
 	if err != nil {
 		return fmt.Errorf("error from json.Unmarshal: %w", err)
 	}
@@ -291,7 +308,7 @@ func (client *TooGooToGoClient) initiateLogin(jsonDataPolling string) error {
 
 		if len(response.Body) > 0 {
 			var parsedBody map[string]interface{}
-			err = json.Unmarshal([]byte(response.Body), &parsedBody)
+			err = json.Unmarshal(response.Body, &parsedBody)
 			if err != nil {
 				return fmt.Errorf("error from json.Unmarshal: %w", err)
 			}
@@ -304,7 +321,7 @@ func (client *TooGooToGoClient) initiateLogin(jsonDataPolling string) error {
 				return fmt.Errorf("error from client.Query: %w", err)
 			}
 
-			err = json.Unmarshal([]byte(response.Body), &parsedBody)
+			err = json.Unmarshal(response.Body, &parsedBody)
 			if err != nil {
 				return fmt.Errorf("error from json.Unmarshal: %w", err)
 			}
@@ -359,7 +376,7 @@ func (client *TooGooToGoClient) ListStores() ([]Store, error) {
 	}
 
 	if len(stores) > 0 {
-		glog.Printf("found %v store(s)!\n", len(stores))
+		glog.Printf("found %v store(s)\n", len(stores))
 	}
 
 	return stores, err
@@ -596,7 +613,7 @@ func (client *TooGooToGoClient) addHeaders(req *http.Request) {
 }
 
 type QueryResponse struct {
-	Body       string
+	Body       []byte
 	StatusCode int
 }
 
@@ -605,18 +622,6 @@ func printHeaders(url *url.URL, title string, header *http.Header) {
 	for headerName, headerValue := range *header {
 		glog.Printf("  - %v: %v\n", headerName, strings.Join(headerValue, "; "))
 	}
-}
-
-func hasGzipContentEncodingHeader(header *http.Header) bool {
-	contentEncoding, hasContentEncoding := (*header)["Content-Encoding"]
-	if hasContentEncoding {
-		for _, contentEncodingPart := range contentEncoding {
-			if contentEncodingPart == "gzip" {
-				return true
-			}
-		}
-	}
-	return false
 }
 
 func (client *TooGooToGoClient) query(method, path string, body []byte, sleepIfNeeded bool) (QueryResponse, error) {
@@ -659,31 +664,15 @@ func (client *TooGooToGoClient) query(method, path string, body []byte, sleepIfN
 
 	ret.StatusCode = res.StatusCode
 
-	var resBodyReader io.Reader
-
-	if hasGzipContentEncodingHeader(&res.Header) {
-		gzReader, err := gzip.NewReader(res.Body)
-		if err != nil {
-			return ret, fmt.Errorf("error from gzip.NewReader: %w", err)
-		}
-		defer gzReader.Close()
-
-		resBodyReader = gzReader
-	} else {
-		resBodyReader = res.Body
-	}
-
-	uncompressedResponse, err := io.ReadAll(resBodyReader)
+	ret.Body, err = DecompressAllBody(res)
 	if err != nil {
-		return ret, fmt.Errorf("error from io.ReadAll: %w", err)
+		return ret, fmt.Errorf("error from DecompressAllBody: %w", err)
 	}
 
-	retry, err = client.checkCaptcha(uncompressedResponse)
+	retry, err = client.checkCaptcha(ret.Body)
 	if retry {
 		return client.query(method, path, body, sleepIfNeeded)
 	}
-
-	ret.Body = string(uncompressedResponse)
 
 	client.setCookie(&res.Header)
 

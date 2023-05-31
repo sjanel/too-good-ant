@@ -11,7 +11,7 @@ const (
 )
 
 func TestStoreEmptyResponse(t *testing.T) {
-	stores, err := NewStoresFromListStoresResponse("")
+	stores, err := NewStoresFromListStoresResponse([]byte{})
 	if len(stores) > 0 || err != nil {
 		t.Fatalf("expected empty list of stores for empty response")
 	}
@@ -22,7 +22,7 @@ func TestStoreStandardResponse(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error reading file %v", kExampleStorePath)
 	}
-	stores, err := NewStoresFromListStoresResponse(string(responseBody))
+	stores, err := NewStoresFromListStoresResponse(responseBody)
 	if err != nil {
 		t.Fatalf("error in NewStoresFromListStoresResponse")
 	}

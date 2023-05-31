@@ -18,9 +18,15 @@ func TestLoadConfig(t *testing.T) {
 
 	expectedConfig := Config{
 		TooGoodToGoConfig: TooGoodToGoConfig{
-			AccountsEmail: []string{
-				"myemail1@email.com",
-				"myemail2@email.com",
+			Accounts: []TooGoodToGoAccount{
+				{
+					Email:     "myemail1@email.com",
+					UserAgent: "<MyUserAgent1-OrEmpty>",
+				},
+				{
+					Email:     "myemail2@email.com",
+					UserAgent: "<MyUserAgent2-OrEmpty>",
+				},
 			},
 			Language: "en-UK; fr-FR",
 			AverageRequestsPeriod: Duration{

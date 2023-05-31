@@ -12,12 +12,12 @@ type OrderPayment struct {
 	State           string
 }
 
-func NewOrderPaymentFromPayOrderResponse(responseBody string) (OrderPayment, error) {
+func NewOrderPaymentFromPayOrderResponse(responseBody []byte) (OrderPayment, error) {
 	var parsedOrderPayment map[string]string
 	var orderPayment OrderPayment
-	err := json.Unmarshal([]byte(responseBody), &parsedOrderPayment)
+	err := json.Unmarshal(responseBody, &parsedOrderPayment)
 	if err != nil {
-		glog.Printf("full response: %v\n", responseBody)
+		glog.Printf("full response: %v\n", string(responseBody))
 		return orderPayment, fmt.Errorf("error from json.Unmarshal: %w", err)
 	}
 

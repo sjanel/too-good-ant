@@ -18,15 +18,20 @@ type Duration struct {
 	time.Duration
 }
 
+type TooGoodToGoAccount struct {
+	Email     string `json:"email"`
+	UserAgent string `json:"userAgent"`
+}
+
 type TooGoodToGoConfig struct {
-	AccountsEmail              []string     `json:"accountsEmail"`
-	Language                   string       `json:"language"`
-	AverageRequestsPeriod      Duration     `json:"averageRequestsPeriod"`
-	TooManyRequestsPausePeriod Duration     `json:"tooManyRequestsPausePeriod"`
-	ActiveOrdersReminderPeriod Duration     `json:"activeOrdersReminderPeriod"`
-	TokenValidityDuration      Duration     `json:"tokenValidityDuration"`
-	SearchConfig               SearchConfig `json:"searchConfig"`
-	UseGzipEncoding            bool         `json:"useGzipEncoding"`
+	Accounts                   []TooGoodToGoAccount `json:"accounts"`
+	Language                   string               `json:"language"`
+	AverageRequestsPeriod      Duration             `json:"averageRequestsPeriod"`
+	TooManyRequestsPausePeriod Duration             `json:"tooManyRequestsPausePeriod"`
+	ActiveOrdersReminderPeriod Duration             `json:"activeOrdersReminderPeriod"`
+	TokenValidityDuration      Duration             `json:"tokenValidityDuration"`
+	SearchConfig               SearchConfig         `json:"searchConfig"`
+	UseGzipEncoding            bool                 `json:"useGzipEncoding"`
 }
 
 type Location struct {
@@ -118,8 +123,8 @@ func ReadConfigFromFile(filePath string) (*Config, error) {
 		return nil, fmt.Errorf("error from json.Unmarshal: %w", err)
 	}
 
-	if len(config.TooGoodToGoConfig.AccountsEmail) == 0 {
-		return nil, fmt.Errorf("you need to specify at least one too good to go email account\n")
+	if len(config.TooGoodToGoConfig.Accounts) == 0 {
+		return nil, fmt.Errorf("you need to specify at least one too good to go account\n")
 	}
 
 	glog.Printf("loaded configuration from %v\n", filePath)

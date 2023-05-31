@@ -17,15 +17,15 @@ func (s *Store) String() string {
 	return fmt.Sprintf("%v, rated %v, price %v, %v available bags", s.Name, s.Rating, s.Price, s.AvailableBags)
 }
 
-func NewStoresFromListStoresResponse(responseBody string) ([]Store, error) {
+func NewStoresFromListStoresResponse(responseBody []byte) ([]Store, error) {
 	if len(responseBody) == 0 {
 		return []Store{}, nil
 	}
 
 	var parsedItems map[string][]map[string]interface{}
-	err := json.Unmarshal([]byte(responseBody), &parsedItems)
+	err := json.Unmarshal(responseBody, &parsedItems)
 	if err != nil {
-		glog.Printf("full response: %v\n", responseBody)
+		glog.Printf("full response: %v\n", string(responseBody))
 		return []Store{}, fmt.Errorf("error from json.Unmarshal: %w", err)
 	}
 

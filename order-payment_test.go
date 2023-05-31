@@ -14,7 +14,7 @@ func TestOrderPaymentFromResponse(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error reading file %v", kExampleOrderPaymentFilepath)
 	}
-	orderPayment, err := NewOrderPaymentFromPayOrderResponse(string(responseBody))
+	orderPayment, err := NewOrderPaymentFromPayOrderResponse(responseBody)
 	if err != nil {
 		t.Fatalf("error in NewPaymentMethodsFromPaymentMethodsResponse: %v", err)
 	}
