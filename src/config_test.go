@@ -1,4 +1,4 @@
-package main
+package tga
 
 import (
 	"reflect"
@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	kExampleConfigPath = "data/example_config.json"
+	kExampleConfigPath = "testdata/example_config.json"
 )
 
 func TestLoadConfig(t *testing.T) {

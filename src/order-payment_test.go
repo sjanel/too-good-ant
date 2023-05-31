@@ -1,4 +1,4 @@
-package main
+package tga
 
 import (
 	"os"
@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	kExampleOrderPaymentFilepath = "data/test/example_order_payment.json"
+	kExampleOrderPaymentFilepath = "testdata/example_order_payment.json"
 )
 
 func TestOrderPaymentFromResponse(t *testing.T) {
