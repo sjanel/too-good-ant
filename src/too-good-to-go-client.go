@@ -29,13 +29,14 @@ const (
 )
 
 type TooGooToGoClient struct {
-	Config            *TooGoodToGoConfig `json:"-"`
-	AccessToken       string             `json:"accessToken"`
-	RefreshToken      string             `json:"refreshToken"`
-	Cookie            []string           `json:"cookie"`
-	UserId            string             `json:"userId"`
-	UserAgent         string             `json:"userAgent"`
-	LastRefreshedTime time.Time          `json:"lastRefreshedTime"`
+	Config                 *TooGoodToGoConfig `json:"-"`
+	AccessToken            string             `json:"accessToken"`
+	RefreshToken           string             `json:"refreshToken"`
+	Cookie                 []string           `json:"cookie"`
+	UserId                 string             `json:"userId"`
+	UserAgent              string             `json:"userAgent"`
+	LastLogInRefreshedTime time.Time          `json:"lastLogInRefreshedTime"`
+	LastTokenRefreshedTime time.Time          `json:"lastTokenRefreshedTime"`
 
 	currentAccountPos         int          `json:"-"`
 	lastQueryTimePerAccount   []time.Time  `json:"-"`
@@ -93,7 +94,7 @@ func (client *TooGooToGoClient) switchToNextEmailAccount() error {
 		}
 	}
 
-	err = client.loginOrRefreshToken()
+	err = client.ensureAuthDataValidity()
 	if err != nil {
 		return fmt.Errorf("error from client.LoginOrRefreshToken: %w", err)
 	}
@@ -144,8 +145,27 @@ func (client *TooGooToGoClient) IsLoggedIn() bool {
 	return len(client.AccessToken) > 0 && len(client.RefreshToken) > 0 && len(client.UserId) > 0
 }
 
+func (client *TooGooToGoClient) IsLogInStillValid() bool {
+	return client.LastLogInRefreshedTime.Add(client.Config.LogInValidityDuration.Duration).After(time.Now())
+}
+
 func (client *TooGooToGoClient) IsTokenStillValid() bool {
-	return client.LastRefreshedTime.Add(client.Config.TokenValidityDuration.Duration).After(time.Now())
+	return client.LastTokenRefreshedTime.Add(client.Config.TokenValidityDuration.Duration).After(time.Now())
+}
+
+func (client *TooGooToGoClient) setRefreshedTokenData(responseBody []byte) error {
+	var parsedBody map[string]interface{}
+	err := json.Unmarshal(responseBody, &parsedBody)
+	if err != nil {
+		return fmt.Errorf("error from json.Unmarshal: %w", err)
+	}
+	client.AccessToken = parsedBody["access_token"].(string)
+	client.RefreshToken = parsedBody["refresh_token"].(string)
+	client.LastTokenRefreshedTime = time.Now()
+
+	glog.Printf("refreshed token\n")
+
+	return nil
 }
 
 func (client *TooGooToGoClient) refreshToken() error {
@@ -157,21 +177,17 @@ func (client *TooGooToGoClient) refreshToken() error {
 
 	response, err := client.query("POST", kRefreshTokenEndpoint, []byte(jsonData), true)
 	if err != nil {
-		return fmt.Errorf("error from client.Query: %w", err)
+		return fmt.Errorf("error from client.query: %w", err)
 	}
 
-	var parsedBody map[string]interface{}
-	err = json.Unmarshal(response.Body, &parsedBody)
+	err = client.setRefreshedTokenData(response.Body)
 	if err != nil {
-		return fmt.Errorf("error from json.Unmarshal: %w", err)
+		return fmt.Errorf("error in client.setRefreshedTokenData: %w\n", err)
 	}
-	client.AccessToken = parsedBody["access_token"].(string)
-	client.RefreshToken = parsedBody["refresh_token"].(string)
-	client.LastRefreshedTime = time.Now()
 
 	err = client.writeAuthorizationDataToFile()
 	if err != nil {
-		glog.Printf("error in client.WriteAuthorizationDataToFile: %v\n", err)
+		glog.Printf("error in client.writeAuthorizationDataToFile: %v\n", err)
 	}
 
 	return nil
@@ -180,15 +196,15 @@ func (client *TooGooToGoClient) refreshToken() error {
 func (client *TooGooToGoClient) writeAuthorizationDataToFile() error {
 	file, err := json.MarshalIndent(client, "", " ")
 	if err != nil {
-		return fmt.Errorf("error in json.MarshalIndent")
+		return fmt.Errorf("error in json.MarshalIndent: %w", err)
 	}
 
 	latestFileName := client.latestAuthorizationFileName()
 	err = os.WriteFile(latestFileName, file, 0644)
 	if err != nil {
-		return fmt.Errorf("error in ioutil.WriteFile")
+		return fmt.Errorf("error in ioutil.WriteFile: %w", err)
 	}
-	glog.Printf("dumped authorization data to %v\n", latestFileName)
+	glog.Printf("wrote authorization data to %v\n", latestFileName)
 
 	return nil
 }
@@ -231,24 +247,7 @@ func (client *TooGooToGoClient) readAuthorizationDataFromLatestFile() error {
 	return nil
 }
 
-func (client *TooGooToGoClient) loginOrRefreshToken() error {
-	if client.IsLoggedIn() {
-		return client.refreshToken()
-	}
-
-	err := client.readAuthorizationDataFromLatestFile()
-	if os.IsNotExist(err) {
-		// file does not exist, no error - just proceed to login
-		err = nil
-	} else if err != nil {
-		return fmt.Errorf("error in readAuthorizationDataFromLatestFile: %w\n", err)
-	} else if client.IsTokenStillValid() {
-		return nil
-	} else {
-		glog.Printf("authorization data has expired\n")
-		client.removeLatestAuthorizationFileName()
-	}
-
+func (client *TooGooToGoClient) logIn() error {
 	glog.Printf("too good to go log in for %v...\n", client.emailAccount())
 
 	jsonDataBeg := fmt.Sprintf(`{
@@ -278,66 +277,103 @@ func (client *TooGooToGoClient) loginOrRefreshToken() error {
 	if state == "TERMS" {
 		return fmt.Errorf("email %v does not seem to be associated with a too good to go account, retry with another mail", client.emailAccount())
 	}
-	if state == "WAIT" {
-		pollingId, hasPollingId := parsedResponse["polling_id"]
-		if !hasPollingId {
-			return fmt.Errorf("expected field 'polling_id' in response %v", parsedResponse)
-		}
-		jsonDataPolling := jsonDataBeg + fmt.Sprintf(`, "request_polling_id": "%v"}`, pollingId)
-
-		err = client.initiateLogin(jsonDataPolling)
-		if err != nil {
-			return fmt.Errorf("error from initiateLogin: %w", err)
-		}
-		return nil
+	if state != "WAIT" {
+		return fmt.Errorf("unexpected state %v in log in response body %v", state, parsedResponse)
 	}
 
-	return fmt.Errorf("unexpected state %v in log in response body %v", state, parsedResponse)
+	pollingId, hasPollingId := parsedResponse["polling_id"]
+	if !hasPollingId {
+		return fmt.Errorf("expected field 'polling_id' in response %v", parsedResponse)
+	}
+	jsonDataPolling := jsonDataBeg + fmt.Sprintf(`, "request_polling_id": "%v"}`, pollingId)
+
+	err = client.initiateLogin(jsonDataPolling)
+	if err != nil {
+		return fmt.Errorf("error from initiateLogin: %w", err)
+	}
+
+	client.LastLogInRefreshedTime = time.Now()
+
+	glog.Printf("logged in successfully\n")
+
+	return nil
+}
+
+func (client *TooGooToGoClient) ensureAuthDataValidity() error {
+	if client.IsLoggedIn() {
+		return client.refreshToken()
+	}
+
+	err := client.readAuthorizationDataFromLatestFile()
+	if os.IsNotExist(err) {
+		// file does not exist, no error - just proceed to login
+		err = nil
+	} else if err != nil {
+		return fmt.Errorf("error in readAuthorizationDataFromLatestFile: %w\n", err)
+	} else if client.IsLogInStillValid() {
+		return nil
+	} else {
+		glog.Printf("authorization data has expired\n")
+		client.removeLatestAuthorizationFileName()
+	}
+
+	err = client.logIn()
+	if err != nil {
+		return fmt.Errorf("error from client.logIn: %w", err)
+	}
+	return nil
+}
+
+func (client *TooGooToGoClient) setUserId() error {
+	// Should be logged in
+	response, err := client.query("POST", kApiUserInformation, []byte{}, false)
+	if err != nil {
+		return fmt.Errorf("error from client.query: %w", err)
+	}
+
+	var parsedBody map[string]interface{}
+	err = json.Unmarshal(response.Body, &parsedBody)
+	if err != nil {
+		return fmt.Errorf("error from json.Unmarshal: %w", err)
+	}
+
+	client.UserId = parsedBody["user_id"].(string)
+
+	return nil
 }
 
 func (client *TooGooToGoClient) initiateLogin(jsonDataPolling string) error {
-	glog.Printf("too good to go validation email sent to %v - you need to validate login", client.emailAccount())
-	const kMaxPollingRetries = 20
+	initiateLoginTime := time.Now()
+	timeoutTime := initiateLoginTime.Add(client.Config.LogInEmailValidationTimeoutDuration.Duration)
 
-	for retryPos := 0; retryPos < kMaxPollingRetries; retryPos++ {
-		glog.Printf("check %v/%v validation (check %v inbox)...\n", retryPos+1, kMaxPollingRetries, client.emailAccount())
+	glog.Printf("check %v inbox and validate log in in email link before %v\n", client.emailAccount(), timeoutTime)
+
+	for timeoutTime.After(time.Now()) {
 		response, err := client.query("POST", kAuthByRequestPollingId, []byte(jsonDataPolling), true)
 		if err != nil {
 			return fmt.Errorf("error from client.Query: %w", err)
 		}
 
 		if len(response.Body) > 0 {
-			var parsedBody map[string]interface{}
-			err = json.Unmarshal(response.Body, &parsedBody)
+			err = client.setRefreshedTokenData(response.Body)
 			if err != nil {
-				return fmt.Errorf("error from json.Unmarshal: %w", err)
-			}
-			client.AccessToken = parsedBody["access_token"].(string)
-			client.RefreshToken = parsedBody["refresh_token"].(string)
-			client.LastRefreshedTime = time.Now()
-
-			response, err := client.query("POST", kApiUserInformation, []byte{}, false)
-			if err != nil {
-				return fmt.Errorf("error from client.Query: %w", err)
+				return fmt.Errorf("error from client.setRefreshedTokenData: %w", err)
 			}
 
-			err = json.Unmarshal(response.Body, &parsedBody)
+			err = client.setUserId()
 			if err != nil {
-				return fmt.Errorf("error from json.Unmarshal: %w", err)
+				return fmt.Errorf("error from client.setUserId: %w", err)
 			}
-
-			client.UserId = parsedBody["user_id"].(string)
 
 			err = client.writeAuthorizationDataToFile()
 			if err != nil {
-				glog.Printf("error in dumpAuthorizationDataToFile: %v\n", err)
+				glog.Printf("error in client.writeAuthorizationDataToFile: %v\n", err)
 			}
 
-			glog.Printf("logged in successfully!")
 			return nil
 		}
 	}
-	return fmt.Errorf("max retries exceeded for polling, retry and accept validation email")
+	return fmt.Errorf("authentication validation timeout")
 }
 
 type ItemParameters struct {
@@ -578,7 +614,7 @@ func (client *TooGooToGoClient) postQueryWithoutSleep(path string, paramObject a
 
 func (client *TooGooToGoClient) postQuery(path string, paramObject any, sleepIfNeeded bool) (QueryResponse, error) {
 	var ret QueryResponse
-	err := client.loginOrRefreshToken()
+	err := client.ensureAuthDataValidity()
 	if err != nil {
 		return ret, fmt.Errorf("error from client.LoginOrRefreshToken: %w", err)
 	}
@@ -598,9 +634,7 @@ func (client *TooGooToGoClient) postQuery(path string, paramObject any, sleepIfN
 
 func (client *TooGooToGoClient) addHeaders(req *http.Request) {
 	req.Header.Add("Accept", "application/json")
-	if client.Config.UseGzipEncoding {
-		req.Header.Add("Accept-Encoding", "gzip")
-	}
+	req.Header.Add("Accept-Encoding", "gzip")
 	req.Header.Add("Accept-Language", client.Config.Language)
 	req.Header.Add("Content-Type", "application/json; charset=utf-8")
 	req.Header.Add("User-Agent", client.UserAgent)
@@ -694,11 +728,9 @@ func (client *TooGooToGoClient) checkStatusCode(statusCode int) (bool, error) {
 		glog.Printf("http status %v received, login again\n", statusCode)
 		client.removeLatestAuthorizationFileName()
 		// force re-login
-		*client = *NewTooGooToGoClient(client.Config, client.verbose)
-
-		err := client.loginOrRefreshToken()
+		err := client.logIn()
 		if err != nil {
-			return false, fmt.Errorf("error from client.LoginOrRefreshToken: %w", err)
+			return false, fmt.Errorf("error from client.logIn: %w", err)
 		}
 		return true, nil
 	default:
@@ -761,4 +793,14 @@ func (client *TooGooToGoClient) canListOpenedOrders() bool {
 		return true
 	}
 	return false
+}
+
+func (client *TooGooToGoClient) Close() error {
+	client.httpClient.CloseIdleConnections()
+
+	err := client.writeAuthorizationDataToFile()
+	if err != nil {
+		return fmt.Errorf("error in client.writeAuthorizationDataToFile: %w\n", err)
+	}
+	return nil
 }

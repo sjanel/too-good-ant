@@ -14,7 +14,9 @@
         "averageRequestsPeriod": "45s",
         "tooManyRequestsPausePeriod": "1h30m",
         "activeOrdersReminderPeriod": "10m",
-        "tokenValidityDuration": "48h",
+        "logInEmailValidationTimeoutDuration": "30m",
+        "logInValidityDuration": "48h",
+        "tokenValidityDuration": "8h",
         "searchConfig": {
             "origin": {
                 "latitude": 41.902782,
@@ -23,8 +25,7 @@
             "radiusInKm": 3,
             "favoritesOnly": true,
             "withStockOnly": true
-        },
-        "useGzipEncoding": true
+        }
     },
     "sendConfig": {
         "emailConfig": {

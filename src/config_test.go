@@ -38,8 +38,14 @@ func TestLoadConfig(t *testing.T) {
 			ActiveOrdersReminderPeriod: Duration{
 				Duration: time.Duration(10) * time.Minute,
 			},
-			TokenValidityDuration: Duration{
+			LogInEmailValidationTimeoutDuration: Duration{
+				Duration: time.Duration(30) * time.Minute,
+			},
+			LogInValidityDuration: Duration{
 				Duration: time.Duration(48) * time.Hour,
+			},
+			TokenValidityDuration: Duration{
+				Duration: time.Duration(8) * time.Hour,
 			},
 			SearchConfig: SearchConfig{
 				Origin: Location{
@@ -50,7 +56,6 @@ func TestLoadConfig(t *testing.T) {
 				FavoritesOnly: true,
 				WithStockOnly: true,
 			},
-			UseGzipEncoding: true,
 		},
 		SendConfig: SendConfig{
 			EmailConfig: EmailConfig{
