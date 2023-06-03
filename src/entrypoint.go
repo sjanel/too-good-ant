@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"reflect"
@@ -43,6 +44,7 @@ func Start() {
 	glog.Printf("starting too good to go ant for %v accounts\n", len(config.TooGoodToGoConfig.Accounts))
 
 	tooGoodToGoClient := NewTooGooToGoClient(&config.TooGoodToGoConfig, config.Verbose)
+	defer tooGoodToGoClient.Close()
 
 	// Capture SIGTERM for graceful shutdown
 	stopSignalReceived := false
@@ -67,25 +69,33 @@ func Start() {
 		}
 
 		if len(stores) > 0 && !reflect.DeepEqual(lastStoresSent, stores) {
-			storeMessage := bytes.NewBuffer([]byte{})
-			for _, store := range stores {
-				storeMessage.WriteString(store.String())
-				storeMessage.WriteByte('\n')
-			}
-			_, err = sender.Write(storeMessage.Bytes())
+			storeMessage, err := computeStoresMessage(stores)
 			if err != nil {
-				glog.Fatalf("error from sender.Write: %v", err)
+				glog.Printf("error from computeStoresMessage: %v", err)
+			}
+			_, err = sender.Write(storeMessage)
+			if err != nil {
+				glog.Printf("error from sender.Write: %v", err)
 			}
 			lastStoresSent = stores
 		}
 
 	}
 
-	err = tooGoodToGoClient.writeAuthorizationDataToFile()
-	if err != nil {
-		glog.Printf("error in tooGoodToGoClient.WriteAuthorizationDataToFile: %v\n", err)
-		err = nil
-	}
+	glog.Printf("exiting too good ant\n")
+}
 
-	glog.Printf("bye\n")
+func computeStoresMessage(stores []Store) ([]byte, error) {
+	storeMessage := bytes.NewBuffer([]byte{})
+	for _, store := range stores {
+		_, err := storeMessage.WriteString(store.String())
+		if err != nil {
+			return nil, fmt.Errorf("error from storeMessage.WriteString: %w", err)
+		}
+		err = storeMessage.WriteByte('\n')
+		if err != nil {
+			return nil, fmt.Errorf("error from storeMessage.WriteByte: %w", err)
+		}
+	}
+	return storeMessage.Bytes(), nil
 }

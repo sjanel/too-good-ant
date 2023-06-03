@@ -31,10 +31,12 @@ func GracefulShutdownHook(stopSignalReceived *bool) {
 	signal.Notify(signalChan, syscall.SIGTERM)
 	go func() {
 		for sig := range signalChan {
-			if !*stopSignalReceived {
-				glog.Printf("%v signal received, will shut down soon...\n", sig)
-				*stopSignalReceived = true
+			if *stopSignalReceived {
+				glog.Printf("%v signal received again, force exiting\n", sig)
+				os.Exit(130)
 			}
+			glog.Printf("%v signal received, ending current loop (interrupt again to force stop)\n", sig)
+			*stopSignalReceived = true
 		}
 	}()
 }

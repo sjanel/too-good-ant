@@ -24,14 +24,15 @@ type TooGoodToGoAccount struct {
 }
 
 type TooGoodToGoConfig struct {
-	Accounts                   []TooGoodToGoAccount `json:"accounts"`
-	Language                   string               `json:"language"`
-	AverageRequestsPeriod      Duration             `json:"averageRequestsPeriod"`
-	TooManyRequestsPausePeriod Duration             `json:"tooManyRequestsPausePeriod"`
-	ActiveOrdersReminderPeriod Duration             `json:"activeOrdersReminderPeriod"`
-	TokenValidityDuration      Duration             `json:"tokenValidityDuration"`
-	SearchConfig               SearchConfig         `json:"searchConfig"`
-	UseGzipEncoding            bool                 `json:"useGzipEncoding"`
+	Accounts                            []TooGoodToGoAccount `json:"accounts"`
+	Language                            string               `json:"language"`
+	AverageRequestsPeriod               Duration             `json:"averageRequestsPeriod"`
+	TooManyRequestsPausePeriod          Duration             `json:"tooManyRequestsPausePeriod"`
+	ActiveOrdersReminderPeriod          Duration             `json:"activeOrdersReminderPeriod"`
+	LogInEmailValidationTimeoutDuration Duration             `json:"logInEmailValidationTimeoutDuration"`
+	LogInValidityDuration               Duration             `json:"logInValidityDuration"`
+	TokenValidityDuration               Duration             `json:"tokenValidityDuration"`
+	SearchConfig                        SearchConfig         `json:"searchConfig"`
 }
 
 type Location struct {
