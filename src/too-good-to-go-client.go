@@ -49,6 +49,13 @@ func (client TooGooToGoClient) emailAccount() string {
 	return client.Config.Accounts[client.currentAccountPos].Email
 }
 
+func (client *TooGooToGoClient) resetAuthData() {
+	client.AccessToken = ""
+	client.RefreshToken = ""
+	client.Cookie = []string{}
+	client.UserId = ""
+}
+
 func NewHttpClient() *http.Client {
 	return &http.Client{
 		Timeout: 15 * time.Second,
@@ -71,10 +78,8 @@ func (client *TooGooToGoClient) incrCurrentAccountPos() {
 
 func (client *TooGooToGoClient) switchToNextEmailAccount() error {
 
-	client.AccessToken = ""
+	client.resetAuthData()
 	client.httpClient = NewHttpClient()
-	client.Cookie = []string{}
-
 	client.incrCurrentAccountPos()
 
 	var err error
@@ -96,7 +101,7 @@ func (client *TooGooToGoClient) switchToNextEmailAccount() error {
 
 	err = client.ensureAuthDataValidity()
 	if err != nil {
-		return fmt.Errorf("error from client.LoginOrRefreshToken: %w", err)
+		return fmt.Errorf("error from client.ensureAuthDataValidity: %w", err)
 	}
 	return nil
 }
@@ -315,6 +320,7 @@ func (client *TooGooToGoClient) ensureAuthDataValidity() error {
 	} else {
 		glog.Printf("authorization data has expired\n")
 		client.removeLatestAuthorizationFileName()
+		client.resetAuthData()
 	}
 
 	err = client.logIn()
