@@ -63,11 +63,6 @@ func Start() {
 			glog.Fatalf("error from ListStores: %v", err)
 		}
 
-		_, err = tooGoodToGoClient.ListOpenedOrders()
-		if err != nil {
-			glog.Fatalf("error from ListOpenedOrders: %v", err)
-		}
-
 		if len(stores) > 0 && !reflect.DeepEqual(lastStoresSent, stores) {
 			storeMessage, err := computeStoresMessage(stores)
 			if err != nil {
@@ -80,6 +75,10 @@ func Start() {
 			lastStoresSent = stores
 		}
 
+		_, err = tooGoodToGoClient.ListOpenedOrders()
+		if err != nil {
+			glog.Fatalf("error from ListOpenedOrders: %v", err)
+		}
 	}
 
 	glog.Printf("exiting too good ant\n")

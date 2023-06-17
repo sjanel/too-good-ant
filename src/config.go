@@ -29,6 +29,7 @@ type TooGoodToGoConfig struct {
 	AverageRequestsPeriod               Duration             `json:"averageRequestsPeriod"`
 	TooManyRequestsPausePeriod          Duration             `json:"tooManyRequestsPausePeriod"`
 	ActiveOrdersReminderPeriod          Duration             `json:"activeOrdersReminderPeriod"`
+	LogInEmailValidationRequestsPeriod  Duration             `json:"logInEmailValidationRequestsPeriod"`
 	LogInEmailValidationTimeoutDuration Duration             `json:"logInEmailValidationTimeoutDuration"`
 	LogInValidityDuration               Duration             `json:"logInValidityDuration"`
 	TokenValidityDuration               Duration             `json:"tokenValidityDuration"`
@@ -43,6 +44,7 @@ type Location struct {
 type SearchConfig struct {
 	Origin        Location `json:"origin"`
 	RadiusInKm    int      `json:"radiusInKm"`
+	NbMaxResults  int      `json:"nbMaxResults"`
 	FavoritesOnly bool     `json:"favoritesOnly"`
 	WithStockOnly bool     `json:"withStockOnly"`
 }

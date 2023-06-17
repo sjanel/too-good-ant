@@ -122,7 +122,7 @@ func getUserAgent(config *TooGoodToGoConfig, accountPos int) (string, error) {
 	kUserAgents := [...]string{
 		fmt.Sprintf("TGTG/%v Dalvik/%v (Linux; Android 12; SM-G973F Build/SP1A.210812.016; wv)", lastApkVersion, kDalvikVersion),
 		fmt.Sprintf("TGTG/%v Dalvik/%v (Linux; Android 12; SM-G975U1 Build/SP1A.210812.016; wv)", lastApkVersion, kDalvikVersion),
-		fmt.Sprintf("TGTG/%v Dalvik/%v (Linux; Android 13; SAMSUNG SM-G991U1)", lastApkVersion, kDalvikVersion),
+		fmt.Sprintf("TGTG/%v Dalvik/%v (Linux; Android 13; SM-G991U1 Build/TP1A.220624.014; wv)", lastApkVersion, kDalvikVersion),
 	}
 
 	return kUserAgents[rand.Intn(len(kUserAgents))], nil
@@ -180,7 +180,10 @@ func (client *TooGooToGoClient) refreshToken() error {
 
 	jsonData := fmt.Sprintf(`{"refresh_token": "%v"}`, client.RefreshToken)
 
-	response, err := client.query("POST", kRefreshTokenEndpoint, []byte(jsonData), true)
+	response, err := client.query("POST", kRefreshTokenEndpoint, []byte(jsonData), QueryDelayPolicy{
+		sleepDuration: client.Config.LogInEmailValidationRequestsPeriod.Duration,
+		randomSleep:   true,
+	})
 	if err != nil {
 		return fmt.Errorf("error from client.query: %w", err)
 	}
@@ -263,7 +266,10 @@ func (client *TooGooToGoClient) logIn() error {
 
 	authData := jsonDataBeg + "}"
 
-	response, err := client.query("POST", kAuthByEmailEndpoint, []byte(authData), true)
+	response, err := client.query("POST", kAuthByEmailEndpoint, []byte(authData), QueryDelayPolicy{
+		sleepDuration: client.Config.LogInEmailValidationRequestsPeriod.Duration,
+		randomSleep:   true,
+	})
 	if err != nil {
 		return fmt.Errorf("error from client.Query: %w", err)
 	}
@@ -332,7 +338,7 @@ func (client *TooGooToGoClient) ensureAuthDataValidity() error {
 
 func (client *TooGooToGoClient) setUserId() error {
 	// Should be logged in
-	response, err := client.query("POST", kApiUserInformation, []byte{}, false)
+	response, err := client.query("POST", kApiUserInformation, []byte{}, QueryDelayPolicy{})
 	if err != nil {
 		return fmt.Errorf("error from client.query: %w", err)
 	}
@@ -354,8 +360,13 @@ func (client *TooGooToGoClient) initiateLogin(jsonDataPolling string) error {
 
 	glog.Printf("check %v inbox and validate log in in email link before %v\n", client.emailAccount(), timeoutTime)
 
+	queryDelayPolicy := QueryDelayPolicy{
+		sleepDuration: client.Config.LogInEmailValidationRequestsPeriod.Duration,
+		randomSleep:   true,
+	}
+
 	for timeoutTime.After(time.Now()) {
-		response, err := client.query("POST", kAuthByRequestPollingId, []byte(jsonDataPolling), true)
+		response, err := client.query("POST", kAuthByRequestPollingId, []byte(jsonDataPolling), queryDelayPolicy)
 		if err != nil {
 			return fmt.Errorf("error from client.Query: %w", err)
 		}
@@ -400,16 +411,16 @@ func (client *TooGooToGoClient) ListStores() ([]Store, error) {
 		UserId:        client.UserId,
 		Origin:        searchConfig.Origin,
 		Radius:        searchConfig.RadiusInKm,
-		PageSize:      20,
+		PageSize:      searchConfig.NbMaxResults,
 		Page:          1,
 		Discover:      false,
 		FavoritesOnly: searchConfig.FavoritesOnly,
 		WithStockOnly: searchConfig.WithStockOnly,
 	}
 
-	response, err := client.postQueryWithSleep(kApiItemEndpoint, params)
+	response, err := client.postQueryWithRandomSleep(kApiItemEndpoint, params)
 	if err != nil {
-		return []Store{}, fmt.Errorf("error from client.postQueryWithSleep: %w", err)
+		return []Store{}, fmt.Errorf("error from client.postQueryWithRandomSleep: %w", err)
 	}
 
 	stores, err := NewStoresFromListStoresResponse(response.Body)
@@ -418,7 +429,7 @@ func (client *TooGooToGoClient) ListStores() ([]Store, error) {
 	}
 
 	if len(stores) > 0 {
-		glog.Printf("found %v store(s)\n", len(stores))
+		glog.Printf("found %v store(s), first is %v\n", len(stores), stores[0].Name)
 	}
 
 	return stores, err
@@ -437,9 +448,9 @@ func (client *TooGooToGoClient) ListOpenedOrders() ([]Order, error) {
 		UserId: client.UserId,
 	}
 
-	response, err := client.postQueryWithSleep(kApiListOpenedOrders, params)
+	response, err := client.postQueryWithRandomSleep(kApiListOpenedOrders, params)
 	if err != nil {
-		return []Order{}, fmt.Errorf("error from client.postQueryWithSleep: %w", err)
+		return []Order{}, fmt.Errorf("error from client.postQueryWithRandomSleep: %w", err)
 	}
 
 	openedOrders, err := NewOrdersFromListOrdersResponse(response.Body)
@@ -480,9 +491,9 @@ func (client *TooGooToGoClient) PaymentMethods(paymentProvider PaymentProvider) 
 		},
 	}
 
-	response, err := client.postQueryWithSleep(kApiPaymentMethods, params)
+	response, err := client.postQueryWithRandomSleep(kApiPaymentMethods, params)
 	if err != nil {
-		return []PaymentMethod{}, fmt.Errorf("error from client.postQueryWithSleep: %w", err)
+		return []PaymentMethod{}, fmt.Errorf("error from client.postQueryWithRandomSleep: %w", err)
 	}
 
 	paymentMethods, err := NewPaymentMethodsFromPaymentMethodsResponse(response.Body)
@@ -539,7 +550,7 @@ func (client *TooGooToGoClient) CancelOrder(orderId string) error {
 
 	path := fmt.Sprintf("order/v7/%v/abort", orderId)
 
-	response, err := client.postQueryWithSleep(path, params)
+	response, err := client.postQueryWithRandomSleep(path, params)
 	if err != nil {
 		return fmt.Errorf("error from client.postQueryWithoutSleep: %w", err)
 	}
@@ -587,7 +598,7 @@ func (client *TooGooToGoClient) PayOrder(orderId string, paymentMethod PaymentMe
 
 	var orderPayment OrderPayment
 
-	response, err := client.postQueryWithSleep(path, params)
+	response, err := client.postQueryWithRandomSleep(path, params)
 	if err != nil {
 		return orderPayment, fmt.Errorf("error from client.postQueryWithoutSleep: %w", err)
 	}
@@ -599,9 +610,9 @@ func (client *TooGooToGoClient) PayOrder(orderId string, paymentMethod PaymentMe
 
 	glog.Printf("order payment %v created\n", orderPayment)
 
-	paymentInfoResponse, err := client.postQueryWithSleep(fmt.Sprintf("payment/v3/%v", orderPayment.Id), []byte{})
+	paymentInfoResponse, err := client.postQueryWithRandomSleep(fmt.Sprintf("payment/v3/%v", orderPayment.Id), []byte{})
 	if err != nil {
-		glog.Printf("error from client.postQueryWithSleep: %v\n", err)
+		glog.Printf("error from client.postQueryWithRandomSleep: %v\n", err)
 		err = nil
 	}
 
@@ -610,15 +621,23 @@ func (client *TooGooToGoClient) PayOrder(orderId string, paymentMethod PaymentMe
 	return orderPayment, nil
 }
 
-func (client *TooGooToGoClient) postQueryWithSleep(path string, paramObject any) (QueryResponse, error) {
-	return client.postQuery(path, paramObject, true)
+func (client *TooGooToGoClient) postQueryWithRandomSleep(path string, paramObject any) (QueryResponse, error) {
+	return client.postQuery(path, paramObject, QueryDelayPolicy{
+		sleepDuration: client.Config.AverageRequestsPeriod.Duration,
+		randomSleep:   true,
+	})
 }
 
 func (client *TooGooToGoClient) postQueryWithoutSleep(path string, paramObject any) (QueryResponse, error) {
-	return client.postQuery(path, paramObject, false)
+	return client.postQuery(path, paramObject, QueryDelayPolicy{})
 }
 
-func (client *TooGooToGoClient) postQuery(path string, paramObject any, sleepIfNeeded bool) (QueryResponse, error) {
+type QueryDelayPolicy struct {
+	sleepDuration time.Duration
+	randomSleep   bool
+}
+
+func (client *TooGooToGoClient) postQuery(path string, paramObject any, queryDelayPolicy QueryDelayPolicy) (QueryResponse, error) {
 	var ret QueryResponse
 	err := client.ensureAuthDataValidity()
 	if err != nil {
@@ -630,7 +649,7 @@ func (client *TooGooToGoClient) postQuery(path string, paramObject any, sleepIfN
 		return ret, fmt.Errorf("error from json.Marshal: %w", err)
 	}
 
-	ret, err = client.query("POST", path, jsonParams, sleepIfNeeded)
+	ret, err = client.query("POST", path, jsonParams, queryDelayPolicy)
 	if err != nil {
 		return ret, fmt.Errorf("error from client.Query: %w", err)
 	}
@@ -640,7 +659,7 @@ func (client *TooGooToGoClient) postQuery(path string, paramObject any, sleepIfN
 
 func (client *TooGooToGoClient) addHeaders(req *http.Request) {
 	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Accept-Encoding", "gzip")
+	req.Header.Add("Accept-Encoding", "gzip, deflate")
 	req.Header.Add("Accept-Language", client.Config.Language)
 	req.Header.Add("Content-Type", "application/json; charset=utf-8")
 	req.Header.Add("User-Agent", client.UserAgent)
@@ -664,7 +683,7 @@ func printHeaders(url *url.URL, title string, header *http.Header) {
 	}
 }
 
-func (client *TooGooToGoClient) query(method, path string, body []byte, sleepIfNeeded bool) (QueryResponse, error) {
+func (client *TooGooToGoClient) query(method, path string, body []byte, queryDelayPolicy QueryDelayPolicy) (QueryResponse, error) {
 	url, err := url.JoinPath(kBaseUrl, path)
 	var ret QueryResponse
 	if err != nil {
@@ -678,9 +697,7 @@ func (client *TooGooToGoClient) query(method, path string, body []byte, sleepIfN
 
 	client.addHeaders(req)
 
-	if sleepIfNeeded {
-		client.sleepIfNeeded()
-	}
+	client.sleep(queryDelayPolicy)
 
 	if client.verbose && len(req.Header) > 0 {
 		printHeaders(req.URL, "request", &req.Header)
@@ -699,7 +716,7 @@ func (client *TooGooToGoClient) query(method, path string, body []byte, sleepIfN
 
 	retry, err := client.checkStatusCode(res.StatusCode)
 	if retry {
-		return client.query(method, path, body, sleepIfNeeded)
+		return client.query(method, path, body, queryDelayPolicy)
 	}
 
 	ret.StatusCode = res.StatusCode
@@ -711,7 +728,7 @@ func (client *TooGooToGoClient) query(method, path string, body []byte, sleepIfN
 
 	retry, err = client.checkCaptcha(ret.Body)
 	if retry {
-		return client.query(method, path, body, sleepIfNeeded)
+		return client.query(method, path, body, queryDelayPolicy)
 	}
 
 	client.setCookie(&res.Header)
@@ -768,22 +785,30 @@ func (client *TooGooToGoClient) checkCaptcha(uncompressedResponse []byte) (bool,
 	return false, nil
 }
 
-func (client *TooGooToGoClient) nextQueryDelay() time.Duration {
-	minRequestsPeriod := (2 * client.Config.AverageRequestsPeriod.Duration) / 3
-	randomExtraDuration := time.Duration(rand.Int63n(minRequestsPeriod.Nanoseconds()))
-	return minRequestsPeriod + randomExtraDuration
+func randomizeDuration(dur time.Duration) time.Duration {
+	const kMinRequestsPeriod = time.Second
+	maxRequestsPeriod := 2*dur - kMinRequestsPeriod
+	randomExtraDuration := time.Duration(rand.Int63n(maxRequestsPeriod.Nanoseconds()))
+	if randomExtraDuration < kMinRequestsPeriod {
+		return kMinRequestsPeriod
+	}
+	return randomExtraDuration
 }
 
 func (client *TooGooToGoClient) lastQueryTime() *time.Time {
 	return &client.lastQueryTimePerAccount[client.currentAccountPos]
 }
 
-func (client *TooGooToGoClient) sleepIfNeeded() {
+func (client *TooGooToGoClient) sleep(queryDelayPolicy QueryDelayPolicy) {
 	nowTime := time.Now()
 	lastQueryTime := client.lastQueryTime()
 	if !lastQueryTime.IsZero() {
 		elapsedTimeSinceLastQuery := nowTime.Sub(*lastQueryTime)
-		waitingTime := client.nextQueryDelay() - elapsedTimeSinceLastQuery
+		queryDelay := queryDelayPolicy.sleepDuration
+		if queryDelayPolicy.randomSleep {
+			queryDelay = randomizeDuration(queryDelay)
+		}
+		waitingTime := queryDelay - elapsedTimeSinceLastQuery
 		if waitingTime > 0 {
 			time.Sleep(waitingTime)
 			nowTime = nowTime.Add(waitingTime)
@@ -794,6 +819,10 @@ func (client *TooGooToGoClient) sleepIfNeeded() {
 
 func (client *TooGooToGoClient) canListOpenedOrders() bool {
 	nowTime := time.Now()
+	if client.lastOpenedOrdersQueryTime.IsZero() {
+		client.lastOpenedOrdersQueryTime = nowTime
+		return false
+	}
 	if client.lastOpenedOrdersQueryTime.Add(client.Config.ActiveOrdersReminderPeriod.Duration).Before(nowTime) {
 		client.lastOpenedOrdersQueryTime = nowTime
 		return true
