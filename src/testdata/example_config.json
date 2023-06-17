@@ -14,6 +14,7 @@
         "averageRequestsPeriod": "45s",
         "tooManyRequestsPausePeriod": "1h30m",
         "activeOrdersReminderPeriod": "10m",
+        "logInEmailValidationRequestsPeriod": "15s",
         "logInEmailValidationTimeoutDuration": "30m",
         "logInValidityDuration": "48h",
         "tokenValidityDuration": "8h",
@@ -23,6 +24,7 @@
                 "longitude": 12.496366
             },
             "radiusInKm": 3,
+            "nbMaxResults": 20,
             "favoritesOnly": true,
             "withStockOnly": true
         }

@@ -38,6 +38,9 @@ func TestLoadConfig(t *testing.T) {
 			ActiveOrdersReminderPeriod: Duration{
 				Duration: time.Duration(10) * time.Minute,
 			},
+			LogInEmailValidationRequestsPeriod: Duration{
+				Duration: time.Duration(15) * time.Second,
+			},
 			LogInEmailValidationTimeoutDuration: Duration{
 				Duration: time.Duration(30) * time.Minute,
 			},
@@ -53,6 +56,7 @@ func TestLoadConfig(t *testing.T) {
 					Longitude: 12.496366,
 				},
 				RadiusInKm:    3,
+				NbMaxResults:  20,
 				FavoritesOnly: true,
 				WithStockOnly: true,
 			},
