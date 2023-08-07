@@ -108,21 +108,33 @@ func (client *TooGooToGoClient) switchToNextEmailAccount() error {
 
 func getUserAgent(config *TooGoodToGoConfig, accountPos int) (string, error) {
 	userAgent := config.Accounts[accountPos].UserAgent
-	if len(userAgent) > 0 {
-		return userAgent, nil
-	}
+
+	const kUserAgentPrefix = "TGTG/"
+	const kDalvikStr = " Dalvik/"
 
 	lastApkVersion, err := GetLastApkVersion()
 	if err != nil {
-		return "", fmt.Errorf("error from GetLastApkVersion: %w", err)
+		return userAgent, fmt.Errorf("error from GetLastApkVersion: %w", err)
+	}
+
+	if len(userAgent) > 0 {
+		dalvikIdx := strings.Index(userAgent, kDalvikStr)
+		if dalvikIdx == -1 {
+			return userAgent, fmt.Errorf("unexpected user agent '%v', should contain '%v'", userAgent, kDalvikStr)
+		}
+		apkVersion := userAgent[len(kUserAgentPrefix):dalvikIdx]
+		if apkVersion != lastApkVersion {
+			glog.Printf("provided user agent apk version '%v' is different from last one '%v', you may want to update it\n", apkVersion, lastApkVersion)
+		}
+		return userAgent, nil
 	}
 
 	const kDalvikVersion = "2.1.0"
 
 	kUserAgents := [...]string{
-		fmt.Sprintf("TGTG/%v Dalvik/%v (Linux; Android 12; SM-G973F Build/SP1A.210812.016; wv)", lastApkVersion, kDalvikVersion),
-		fmt.Sprintf("TGTG/%v Dalvik/%v (Linux; Android 12; SM-G975U1 Build/SP1A.210812.016; wv)", lastApkVersion, kDalvikVersion),
-		fmt.Sprintf("TGTG/%v Dalvik/%v (Linux; Android 13; SM-G991U1 Build/TP1A.220624.014; wv)", lastApkVersion, kDalvikVersion),
+		fmt.Sprintf("%v%v%v%v (Linux; Android 12; SM-G973F Build/SP1A.210812.016; wv)", kUserAgentPrefix, kDalvikStr, lastApkVersion, kDalvikVersion),
+		fmt.Sprintf("%v%v%v%v (Linux; Android 12; SM-G975U1 Build/SP1A.210812.016; wv)", kUserAgentPrefix, kDalvikStr, lastApkVersion, kDalvikVersion),
+		fmt.Sprintf("%v%v%v%v (Linux; Android 13; SM-G991U1 Build/TP1A.220624.014; wv)", kUserAgentPrefix, kDalvikStr, lastApkVersion, kDalvikVersion),
 	}
 
 	return kUserAgents[rand.Intn(len(kUserAgents))], nil

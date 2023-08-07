@@ -52,11 +52,6 @@ func Start() {
 
 	var lastStoresSent []Store
 
-	_, err = tooGoodToGoClient.PaymentMethods(Adyen)
-	if err != nil {
-		glog.Fatalf("error from PaymentMethods: %v", err)
-	}
-
 	for !stopSignalReceived {
 		stores, err := tooGoodToGoClient.ListStores()
 		if err != nil {
