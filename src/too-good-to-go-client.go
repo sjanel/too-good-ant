@@ -319,6 +319,8 @@ func (client *TooGooToGoClient) logIn() error {
 
 	glog.Printf("logged in successfully\n")
 
+	*client.lastQueryTime() = time.Time{}
+
 	return nil
 }
 
