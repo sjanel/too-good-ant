@@ -38,7 +38,7 @@ func NewStoresFromListStoresResponse(responseBody []byte) ([]Store, error) {
 
 		stores[itemPos].Id = itemParsed["item_id"].(string)
 
-		stores[itemPos].Price = NewPrice(itemParsed["price_including_taxes"].(map[string]interface{}))
+		stores[itemPos].Price = NewPrice(itemParsed["item_price"].(map[string]interface{}))
 
 		rating, hasRating := itemParsed["average_overall_rating"]
 		if hasRating {
