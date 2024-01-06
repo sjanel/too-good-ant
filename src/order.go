@@ -53,7 +53,7 @@ func NewOrdersFromListOrdersResponse(responseBody []byte) ([]Order, error) {
 		orders[itemPos].StoreId = parsedItem["store_id"].(string)
 		orders[itemPos].State = parsedItem["state"].(string)
 		orders[itemPos].Id = parsedItem["order_id"].(string)
-		orders[itemPos].Price = NewPrice(parsedItem["price_including_taxes"].(map[string]interface{}))
+		orders[itemPos].Price = NewPrice(parsedItem["item_price"].(map[string]interface{}))
 		orders[itemPos].Quantity = int(parsedItem["quantity"].(float64))
 
 		orders[itemPos].PickupDetails.Address = parsedItem["pickup_location"].(map[string]interface{})["address"].(map[string]interface{})["address_line"].(string)

@@ -16,7 +16,7 @@
             },
             "store_time_zone": "Europe/Paris",
             "quantity": 1,
-            "price_including_taxes": {
+            "item_price": {
                 "code": "EUR",
                 "minor_units": 399,
                 "decimals": 2
