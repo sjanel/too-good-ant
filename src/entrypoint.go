@@ -86,9 +86,9 @@ func computeStoresMessage(stores []Store) ([]byte, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error from storeMessage.WriteString: %w", err)
 		}
-		err = storeMessage.WriteByte('\n')
+		_, err = storeMessage.WriteString("\n\n")
 		if err != nil {
-			return nil, fmt.Errorf("error from storeMessage.WriteByte: %w", err)
+			return nil, fmt.Errorf("error from storeMessage.WriteString: %w", err)
 		}
 	}
 	return storeMessage.Bytes(), nil

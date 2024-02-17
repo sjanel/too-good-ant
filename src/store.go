@@ -14,7 +14,7 @@ type Store struct {
 }
 
 func (s *Store) String() string {
-	return fmt.Sprintf("%v, rated %v, price %v, %v available bags", s.Name, s.Rating, s.Price, s.AvailableBags)
+	return fmt.Sprintf("%v, rated %v, price %v, %v available", s.Name, s.Rating, s.Price, s.AvailableBags)
 }
 
 func NewStoresFromListStoresResponse(responseBody []byte) ([]Store, error) {
